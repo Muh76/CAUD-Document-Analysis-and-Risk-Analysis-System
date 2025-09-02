@@ -1,0 +1,30 @@
+# DVC Configuration for Contract Analysis System
+# Data versioning and pipeline management
+
+stages:
+  data_processing:
+    cmd: python src/data/pipeline.py
+    deps:
+      - src/data/pipeline.py
+      - data/raw/CUAD_v1.json
+    outs:
+      - data/processed/contract_metadata.csv
+      - data/processed/clause_segments.csv
+      - data/processed/data_report.json
+      - data/processed/data_contracts.json
+    metrics:
+      - data/processed/data_report.json:
+          cache: false
+
+  baseline_training:
+    cmd: python src/models/baseline_models.py
+    deps:
+      - src/models/baseline_models.py
+      - data/processed/clause_segments.csv
+    outs:
+      - models/baseline/baseline_classifier.joblib
+      - models/baseline/baseline_metrics.json
+      - models/baseline/baseline_evaluation_report.json
+    metrics:
+      - models/baseline/baseline_metrics.json:
+          cache: false
