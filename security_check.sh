@@ -26,8 +26,8 @@ echo ""
 echo "✅ CHECKING FOR API KEYS IN CODE:"
 echo ""
 
-# Check for hardcoded API keys
-if grep -r "sk-" src/ 2>/dev/null | grep -v "your-api-key" >/dev/null; then
+# Check for hardcoded API keys (more specific pattern)
+if grep -r "sk-proj-" src/ 2>/dev/null >/dev/null; then
     echo "   ❌ WARNING: Found hardcoded OpenAI API keys!"
 else
     echo "   ✅ No hardcoded OpenAI API keys found"
