@@ -115,10 +115,7 @@ log/
 mlruns/
 mlflow.db
 
-# Model files (large files)
-*.pkl
-*.pickle
-*.joblib
+# Model files (large files) - only exclude very large model files
 *.h5
 *.hdf5
 *.pb
@@ -184,18 +181,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# CUAD dataset files (large)
-full_contract_txt/
-label_group_xlsx/
-*.csv
-*.xlsx
-*.xls
-
-# Generated PDFs and reports
-*.pdf
-reports/
-outputs/
 
 # Cache directories
 .cache/
