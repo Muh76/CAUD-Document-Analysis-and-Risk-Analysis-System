@@ -10,7 +10,7 @@ echo ""
 
 echo "🔤 OpenAI API:"
 echo "   Status: ✅ CONFIGURED"
-echo "   Key: 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"
+echo "   Key: [CONFIGURED - not shown for security]"
 echo "   Usage: RAG suggestions, risk analysis, alternative wording"
 echo ""
 
@@ -18,7 +18,7 @@ echo "🔵 Azure OpenAI:"
 echo "   Status: ✅ CONFIGURED"
 echo "   Endpoint: https://genapi.openai.azure.com/"
 echo "   Resource: genAPI (Muh_Azure_ML)"
-echo "   Key: 4TIfAyNvMISkKdam3qeCB0ANKtvOLlMxjxRzAGLfuy6wBjn6k2BQJQQJ99BHACYeBjFXJ3w3AAABACOGYkRm"
+echo "   Key: [CONFIGURED - not shown for security]"
 echo "   Usage: Enterprise-grade LLM, backup to OpenAI"
 echo ""
 
