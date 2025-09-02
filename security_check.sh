@@ -33,7 +33,7 @@ else
     echo "   ✅ No hardcoded OpenAI API keys found"
 fi
 
-if grep -r "4TIfAyNvMISkKdam3qeCB0ANKtvOLlMxjxRzAGLfuy6wBjn6k2BQJQQJ99BHACYeBjFXJ3w3AAABACOGYkRm" src/ 2>/dev/null >/dev/null; then
+if grep -r "azure-api-key" src/ 2>/dev/null >/dev/null; then
     echo "   ❌ WARNING: Found hardcoded Azure API keys!"
 else
     echo "   ✅ No hardcoded Azure API keys found"

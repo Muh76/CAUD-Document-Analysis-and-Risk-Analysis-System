@@ -10,7 +10,6 @@ echo ""
 
 echo "🔤 OpenAI API:"
 echo "   Status: ✅ CONFIGURED"
-echo "   Key: [CONFIGURED - not shown for security]"
 echo "   Usage: RAG suggestions, risk analysis, alternative wording"
 echo ""
 
@@ -18,7 +17,6 @@ echo "🔵 Azure OpenAI:"
 echo "   Status: ✅ CONFIGURED"
 echo "   Endpoint: https://genapi.openai.azure.com/"
 echo "   Resource: genAPI (Muh_Azure_ML)"
-echo "   Key: [CONFIGURED - not shown for security]"
 echo "   Usage: Enterprise-grade LLM, backup to OpenAI"
 echo ""
 
