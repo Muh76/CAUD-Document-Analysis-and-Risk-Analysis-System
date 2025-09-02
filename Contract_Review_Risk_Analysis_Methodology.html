@@ -1,0 +1,931 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Contract Review & Risk Analysis System - Methodology</title>
+        <style>
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+            body {
+                font-family: 'Arial', sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+                color: #333;
+                font-size: 12px;
+            }
+            h1 {
+                color: #2c3e50;
+                border-bottom: 3px solid #3498db;
+                padding-bottom: 10px;
+                font-size: 24px;
+                page-break-after: avoid;
+            }
+            h2 {
+                color: #34495e;
+                border-bottom: 2px solid #bdc3c7;
+                padding-bottom: 5px;
+                font-size: 18px;
+                page-break-after: avoid;
+            }
+            h3 {
+                color: #7f8c8d;
+                font-size: 14px;
+                page-break-after: avoid;
+            }
+            h4 {
+                color: #7f8c8d;
+                font-size: 12px;
+                page-break-after: avoid;
+            }
+            code {
+                background-color: #f8f9fa;
+                padding: 2px 4px;
+                border-radius: 3px;
+                font-family: 'Courier New', monospace;
+                font-size: 10px;
+            }
+            pre {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 5px;
+                overflow-x: auto;
+                border-left: 4px solid #3498db;
+                font-size: 10px;
+                page-break-inside: avoid;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 20px 0;
+                font-size: 10px;
+                page-break-inside: avoid;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .checklist {
+                background-color: #e8f5e8;
+                padding: 15px;
+                border-radius: 5px;
+                border-left: 4px solid #27ae60;
+                margin: 10px 0;
+            }
+            .warning {
+                background-color: #fff3cd;
+                padding: 15px;
+                border-radius: 5px;
+                border-left: 4px solid #ffc107;
+                margin: 10px 0;
+            }
+            .info {
+                background-color: #d1ecf1;
+                padding: 15px;
+                border-radius: 5px;
+                border-left: 4px solid #17a2b8;
+                margin: 10px 0;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #3498db;
+            }
+            .author-info {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 20px;
+                font-size: 11px;
+            }
+            .toc {
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-radius: 5px;
+                margin: 20px 0;
+                page-break-after: avoid;
+            }
+            .toc ul {
+                list-style-type: none;
+                padding-left: 20px;
+            }
+            .toc li {
+                margin: 5px 0;
+            }
+            .toc a {
+                text-decoration: none;
+                color: #3498db;
+            }
+            .progress-tracker {
+                background-color: #e8f5e8;
+                padding: 15px;
+                border-radius: 5px;
+                margin: 20px 0;
+                page-break-inside: avoid;
+            }
+            .progress-tracker h3 {
+                color: #27ae60;
+                margin-top: 0;
+            }
+            .progress-tracker ul {
+                list-style-type: none;
+                padding-left: 0;
+            }
+            .progress-tracker li {
+                margin: 5px 0;
+                padding: 5px;
+                background-color: #f8f9fa;
+                border-radius: 3px;
+            }
+            .progress-tracker li:before {
+                content: "☐ ";
+                color: #7f8c8d;
+            }
+            .progress-tracker li.completed:before {
+                content: "☑ ";
+                color: #27ae60;
+            }
+            @media print {
+                body {
+                    font-size: 10px;
+                }
+                h1 {
+                    font-size: 20px;
+                }
+                h2 {
+                    font-size: 16px;
+                }
+                h3 {
+                    font-size: 12px;
+                }
+                pre, code {
+                    font-size: 8px;
+                }
+                table {
+                    font-size: 8px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Contract Review & Risk Analysis System</h1>
+            <h2>Comprehensive Methodology & Implementation Guide</h2>
+        </div>
+        
+        <div class="author-info">
+            <strong>Author:</strong> Mohammad Babaie<br>
+            <strong>Email:</strong> mj.babaie@gmail.com<br>
+            <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/mohammadbabaie/">https://www.linkedin.com/in/mohammadbabaie/</a><br>
+            <strong>GitHub:</strong> <a href="https://github.com/Muh76">https://github.com/Muh76</a>
+        </div>
+        
+        <h1 id="contract-review-risk-analysis-system">Contract Review &amp; Risk Analysis System</h1>
+<h2 id="comprehensive-methodology-implementation-guide">Comprehensive Methodology &amp; Implementation Guide</h2>
+<p><strong>Project Overview:</strong> Production-ready legal AI system combining CUAD dataset, risk scoring, RAG, and MLOps for maximum employment impact.</p>
+<p><strong>Author:</strong> Mohammad Babaie<br />
+<strong>Email:</strong> mj.babaie@gmail.com<br />
+<strong>LinkedIn:</strong> https://www.linkedin.com/in/mohammadbabaie/<br />
+<strong>GitHub:</strong> https://github.com/Muh76</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#project-vision--market-positioning">Project Vision &amp; Market Positioning</a></li>
+<li><a href="#technical-architecture">Technical Architecture</a></li>
+<li><a href="#implementation-phases">Implementation Phases</a></li>
+<li><a href="#core-methodologies">Core Methodologies</a></li>
+<li><a href="#risk-scoring--clause-highlighting">Risk Scoring &amp; Clause Highlighting</a></li>
+<li><a href="#rag-implementation">RAG Implementation</a></li>
+<li><a href="#compliance--legal-ops">Compliance &amp; Legal Ops</a></li>
+<li><a href="#mlops-pipeline">MLOps Pipeline</a></li>
+<li><a href="#business-metrics--roi">Business Metrics &amp; ROI</a></li>
+<li><a href="#deployment-strategy">Deployment Strategy</a></li>
+<li><a href="#testing--quality-assurance">Testing &amp; Quality Assurance</a></li>
+<li><a href="#security--compliance">Security &amp; Compliance</a></li>
+<li><a href="#performance-optimization">Performance Optimization</a></li>
+<li><a href="#documentation--portfolio">Documentation &amp; Portfolio</a></li>
+<li><a href="#employment-strategy">Employment Strategy</a></li>
+<li><a href="#success-metrics">Success Metrics</a></li>
+</ol>
+<hr />
+<h2 id="project-vision-market-positioning">Project Vision &amp; Market Positioning</h2>
+<h3 id="core-value-proposition">🎯 Core Value Proposition</h3>
+<ul>
+<li><strong>Risk-First Approach</strong>: Prioritize risk scoring over pure classification</li>
+<li><strong>Actionable Intelligence</strong>: Provide specific recommendations, not just analysis</li>
+<li><strong>Production Ready</strong>: Full MLOps pipeline with monitoring and deployment</li>
+<li><strong>Business Focus</strong>: ROI metrics and compliance tracking</li>
+</ul>
+<h3 id="market-opportunity">📊 Market Opportunity</h3>
+<ul>
+<li><strong>Legal Tech Market</strong>: $25B+ growing at 15% CAGR</li>
+<li><strong>Contract Review</strong>: $3B+ segment with 80% manual processes</li>
+<li><strong>AI Adoption</strong>: 60% of law firms planning AI investment in next 2 years</li>
+</ul>
+<h3 id="competitive-advantages">🏆 Competitive Advantages</h3>
+<ol>
+<li><strong>Real Dataset</strong>: CUAD v1 with 510 contracts and 13,000+ labels</li>
+<li><strong>Risk Quantification</strong>: Numerical risk scores with business impact</li>
+<li><strong>RAG Integration</strong>: Precedent analysis and alternative suggestions</li>
+<li><strong>Production Deployment</strong>: Full-stack solution, not just research</li>
+</ol>
+<hr />
+<h2 id="technical-architecture">Technical Architecture</h2>
+<h3 id="system-architecture">🏗️ System Architecture</h3>
+<div class="codehilite"><pre><span></span><code>┌─────────────────────────────────────────────────────────────┐
+│                    CLOUD INFRASTRUCTURE                     │
+├─────────────────────────────────────────────────────────────┤
+│  Load Balancer (AWS ALB/NGINX)                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   API GW    │  │   API GW    │  │   API GW    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   ML API     │  │  Web App    │  │  Dashboard  │         │
+│  │  (FastAPI)   │  │ (React/Vue) │  │ (Streamlit) │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   Redis     │  │ PostgreSQL │  │   MinIO     │         │
+│  │ (Caching)   │  │ (Metadata) │  │ (Documents)│         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ MLflow      │  │ Prometheus  │  │   Grafana   │         │
+│  │ (Tracking)  │  │ (Metrics)   │  │ (Monitoring)│         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└─────────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+<h3 id="technology-stack">🛠️ Technology Stack</h3>
+<ul>
+<li><strong>Backend</strong>: FastAPI + Python 3.9+</li>
+<li><strong>Frontend</strong>: React.js + TypeScript</li>
+<li><strong>ML Framework</strong>: PyTorch Lightning + Transformers</li>
+<li><strong>Database</strong>: PostgreSQL + Redis + ChromaDB</li>
+<li><strong>Cloud</strong>: AWS/GCP with Docker + Kubernetes</li>
+<li><strong>Monitoring</strong>: MLflow + Prometheus + Grafana</li>
+<li><strong>Testing</strong>: pytest + Postman + Selenium</li>
+</ul>
+<hr />
+<h2 id="implementation-phases">Implementation Phases</h2>
+<h3 id="phase-1-mvp-foundation-2-weeks">Phase 1: MVP Foundation (2 weeks)</h3>
+<p><strong>Goal</strong>: Working demo with core risk analysis</p>
+<h4 id="week-1-core-analysis-engine">Week 1: Core Analysis Engine</h4>
+<ul>
+<li>[ ] Set up development environment</li>
+<li>[ ] Implement CUAD data preprocessing</li>
+<li>[ ] Build basic clause extraction model</li>
+<li>[ ] Create risk scoring algorithm</li>
+<li>[ ] Develop clause highlighting system</li>
+</ul>
+<h4 id="week-2-user-interface-rag">Week 2: User Interface &amp; RAG</h4>
+<ul>
+<li>[ ] Build Streamlit dashboard</li>
+<li>[ ] Implement vector database (ChromaDB)</li>
+<li>[ ] Add similar clause retrieval</li>
+<li>[ ] Integrate SHAP explanations</li>
+<li>[ ] Deploy MVP to Streamlit Cloud</li>
+</ul>
+<h3 id="phase-2-production-features-1-month">Phase 2: Production Features (1 month)</h3>
+<p><strong>Goal</strong>: Production-ready API with MLOps</p>
+<h4 id="week-3-4-backend-api">Week 3-4: Backend &amp; API</h4>
+<ul>
+<li>[ ] Develop FastAPI backend</li>
+<li>[ ] Implement authentication system</li>
+<li>[ ] Add file upload/processing</li>
+<li>[ ] Create RESTful endpoints</li>
+<li>[ ] Add request/response validation</li>
+</ul>
+<h4 id="week-5-6-mlops-monitoring">Week 5-6: MLOps &amp; Monitoring</h4>
+<ul>
+<li>[ ] Set up MLflow tracking</li>
+<li>[ ] Implement model versioning</li>
+<li>[ ] Add performance monitoring</li>
+<li>[ ] Create automated retraining pipeline</li>
+<li>[ ] Set up alerting system</li>
+</ul>
+<h3 id="phase-3-advanced-features-2-months">Phase 3: Advanced Features (2 months)</h3>
+<p><strong>Goal</strong>: Enterprise-ready solution</p>
+<h4 id="month-2-innovation-rag">Month 2: Innovation &amp; RAG</h4>
+<ul>
+<li>[ ] Advanced RAG with LLM integration</li>
+<li>[ ] Multi-modal document processing</li>
+<li>[ ] Alternative clause suggestions</li>
+<li>[ ] Precedent analysis system</li>
+<li>[ ] Risk trend analysis</li>
+</ul>
+<h4 id="month-3-scale-polish">Month 3: Scale &amp; Polish</h4>
+<ul>
+<li>[ ] Cloud deployment (AWS/GCP)</li>
+<li>[ ] Load testing &amp; optimization</li>
+<li>[ ] Security hardening</li>
+<li>[ ] Comprehensive documentation</li>
+<li>[ ] Demo preparation</li>
+</ul>
+<hr />
+<h2 id="core-methodologies">Core Methodologies</h2>
+<h3 id="multi-task-learning-model">🤖 Multi-Task Learning Model</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">LegalContractModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_categories</span><span class="o">=</span><span class="mi">41</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;roberta-base&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifiers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">({</span>
+            <span class="s1">&#39;binary&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">768</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>      <span class="c1"># Yes/No categories</span>
+            <span class="s1">&#39;extractive&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">768</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Span extraction</span>
+            <span class="s1">&#39;regression&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">768</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># Dates, amounts</span>
+        <span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">task_type</span><span class="p">):</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifiers</span><span class="p">[</span><span class="n">task_type</span><span class="p">](</span><span class="n">outputs</span><span class="o">.</span><span class="n">pooler_output</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="risk-scoring-algorithm">📊 Risk Scoring Algorithm</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">RiskScoringEngine</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">risk_weights</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;uncapped_liability&#39;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+            <span class="s1">&#39;non_compete&#39;</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span>
+            <span class="s1">&#39;ip_assignment&#39;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
+            <span class="s1">&#39;termination_convenience&#39;</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>
+            <span class="s1">&#39;audit_rights&#39;</span><span class="p">:</span> <span class="mf">0.05</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">calculate_risk_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extracted_clauses</span><span class="p">):</span>
+        <span class="n">risk_score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">clause_type</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">risk_weights</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">clause_type</span> <span class="ow">in</span> <span class="n">extracted_clauses</span><span class="p">:</span>
+                <span class="n">risk_score</span> <span class="o">+=</span> <span class="n">weight</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clause_risk_value</span><span class="p">(</span><span class="n">extracted_clauses</span><span class="p">[</span><span class="n">clause_type</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">risk_score</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h2 id="risk-scoring-clause-highlighting">Risk Scoring &amp; Clause Highlighting</h2>
+<h3 id="risk-prioritization-system">🎯 Risk Prioritization System</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">RiskPrioritizationEngine</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">risk_categories</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;uncapped_liability&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_assignment&#39;</span><span class="p">,</span> <span class="s1">&#39;non_compete&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;termination_convenience&#39;</span><span class="p">,</span> <span class="s1">&#39;audit_rights&#39;</span><span class="p">,</span> <span class="s1">&#39;liquidated_damages&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;medium&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;governing_law&#39;</span><span class="p">,</span> <span class="s1">&#39;warranty_duration&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;document_name&#39;</span><span class="p">,</span> <span class="s1">&#39;parties&#39;</span><span class="p">]</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">prioritize_clauses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extracted_clauses</span><span class="p">):</span>
+        <span class="n">prioritized</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">clause_type</span><span class="p">,</span> <span class="n">clause_text</span> <span class="ow">in</span> <span class="n">extracted_clauses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">risk_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_risk_level</span><span class="p">(</span><span class="n">clause_type</span><span class="p">)</span>
+            <span class="n">business_impact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_business_impact</span><span class="p">(</span><span class="n">clause_type</span><span class="p">)</span>
+            <span class="n">prioritized</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;clause_type&#39;</span><span class="p">:</span> <span class="n">clause_type</span><span class="p">,</span>
+                <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">clause_text</span><span class="p">,</span>
+                <span class="s1">&#39;risk_level&#39;</span><span class="p">:</span> <span class="n">risk_level</span><span class="p">,</span>
+                <span class="s1">&#39;business_impact&#39;</span><span class="p">:</span> <span class="n">business_impact</span><span class="p">,</span>
+                <span class="s1">&#39;action_required&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_action_required</span><span class="p">(</span><span class="n">risk_level</span><span class="p">)</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">prioritized</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;business_impact&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<h3 id="clause-highlighting-system">🔍 Clause Highlighting System</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">highlight_legal_clauses</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">extracted_clauses</span><span class="p">):</span>
+    <span class="n">highlighted_text</span> <span class="o">=</span> <span class="n">text</span>
+    <span class="k">for</span> <span class="n">clause_type</span><span class="p">,</span> <span class="n">clause_text</span> <span class="ow">in</span> <span class="n">extracted_clauses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">get_risk_color</span><span class="p">(</span><span class="n">clause_type</span><span class="p">)</span>
+        <span class="n">highlighted_text</span> <span class="o">=</span> <span class="n">highlighted_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="n">clause_text</span><span class="p">,</span> 
+            <span class="sa">f</span><span class="s1">&#39;&lt;span style=&quot;background-color: </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">clause_text</span><span class="si">}</span><span class="s1">&lt;/span&gt;&#39;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">highlighted_text</span>
+
+<span class="k">def</span> <span class="nf">get_risk_color</span><span class="p">(</span><span class="n">clause_type</span><span class="p">):</span>
+    <span class="n">risk_colors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="s1">&#39;#ff4444&#39;</span><span class="p">,</span>  <span class="c1"># Red</span>
+        <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="s1">&#39;#ff8800&#39;</span><span class="p">,</span>      <span class="c1"># Orange</span>
+        <span class="s1">&#39;medium&#39;</span><span class="p">:</span> <span class="s1">&#39;#ffcc00&#39;</span><span class="p">,</span>    <span class="c1"># Yellow</span>
+        <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="s1">&#39;#44ff44&#39;</span>        <span class="c1"># Green</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">risk_colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">get_risk_level</span><span class="p">(</span><span class="n">clause_type</span><span class="p">),</span> <span class="s1">&#39;#cccccc&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<hr />
+<h2 id="rag-implementation">RAG Implementation</h2>
+<h3 id="legal-rag-system">🔍 Legal RAG System</h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">chromadb</span>
+<span class="kn">from</span> <span class="nn">sentence_transformers</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">import</span> <span class="nn">openai</span>
+
+<span class="k">class</span> <span class="nc">LegalRAGSystem</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedder</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_db</span> <span class="o">=</span> <span class="n">chromadb</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_db</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span><span class="s2">&quot;legal_clauses&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAI</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">add_precedent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_text</span><span class="p">,</span> <span class="n">clause_type</span><span class="p">,</span> <span class="n">outcome</span><span class="p">):</span>
+        <span class="n">embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">contract_text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">embeddings</span><span class="o">=</span><span class="p">[</span><span class="n">embedding</span><span class="p">],</span>
+            <span class="n">documents</span><span class="o">=</span><span class="p">[</span><span class="n">contract_text</span><span class="p">],</span>
+            <span class="n">metadatas</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;clause_type&#39;</span><span class="p">:</span> <span class="n">clause_type</span><span class="p">,</span> <span class="s1">&#39;outcome&#39;</span><span class="p">:</span> <span class="n">outcome</span><span class="p">}]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_similar_clauses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_clause</span><span class="p">,</span> <span class="n">clause_type</span><span class="p">):</span>
+        <span class="n">query_embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">query_clause</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+            <span class="n">query_embeddings</span><span class="o">=</span><span class="p">[</span><span class="n">query_embedding</span><span class="p">],</span>
+            <span class="n">n_results</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">where</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;clause_type&#39;</span><span class="p">:</span> <span class="n">clause_type</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">suggest_alternative_wording</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">risky_clause</span><span class="p">,</span> <span class="n">clause_type</span><span class="p">):</span>
+        <span class="n">similar_clauses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_similar_clauses</span><span class="p">(</span><span class="n">risky_clause</span><span class="p">,</span> <span class="n">clause_type</span><span class="p">)</span>
+
+        <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Analyze this risky clause: </span><span class="si">{</span><span class="n">risky_clause</span><span class="si">}</span>
+
+<span class="s2">        Here are similar clauses with better outcomes:</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">similar_clauses</span><span class="si">}</span>
+
+<span class="s2">        Suggest safer alternative wording that maintains the intent but reduces risk.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">}]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+</code></pre></div>
+
+<h3 id="precedent-database-setup">📚 Precedent Database Setup</h3>
+<ol>
+<li><strong>Data Ingestion</strong>: Process CUAD contracts into vector database</li>
+<li><strong>Metadata Enrichment</strong>: Add outcome information and risk assessments</li>
+<li><strong>Similarity Search</strong>: Implement semantic search for similar clauses</li>
+<li><strong>Alternative Suggestions</strong>: Generate safer clause alternatives</li>
+</ol>
+<hr />
+<h2 id="compliance-legal-ops">Compliance &amp; Legal Ops</h2>
+<h3 id="audit-trail-system">📋 Audit Trail System</h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="k">class</span> <span class="nc">LegalOpsTracker</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audit_db</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># In production, use proper database</span>
+
+    <span class="k">def</span> <span class="nf">log_review_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_id</span><span class="p">,</span> <span class="n">reviewer_id</span><span class="p">,</span> <span class="n">ai_suggestions</span><span class="p">,</span> <span class="n">human_decisions</span><span class="p">):</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">audit_record</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;session_id&#39;</span><span class="p">:</span> <span class="n">session_id</span><span class="p">,</span>
+            <span class="s1">&#39;contract_id&#39;</span><span class="p">:</span> <span class="n">contract_id</span><span class="p">,</span>
+            <span class="s1">&#39;reviewer_id&#39;</span><span class="p">:</span> <span class="n">reviewer_id</span><span class="p">,</span>
+            <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">(),</span>
+            <span class="s1">&#39;ai_suggestions&#39;</span><span class="p">:</span> <span class="n">ai_suggestions</span><span class="p">,</span>
+            <span class="s1">&#39;human_decisions&#39;</span><span class="p">:</span> <span class="n">human_decisions</span><span class="p">,</span>
+            <span class="s1">&#39;ai_influence_score&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_ai_influence</span><span class="p">(</span><span class="n">ai_suggestions</span><span class="p">,</span> <span class="n">human_decisions</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audit_db</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">audit_record</span>
+        <span class="k">return</span> <span class="n">session_id</span>
+
+    <span class="k">def</span> <span class="nf">generate_audit_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_id</span><span class="p">,</span> <span class="n">date_range</span><span class="p">):</span>
+        <span class="n">sessions</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">audit_db</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> 
+                   <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;contract_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">contract_id</span> 
+                   <span class="ow">and</span> <span class="n">date_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">date_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;total_reviews&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">),</span>
+            <span class="s1">&#39;ai_assisted_reviews&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;ai_influence_score&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]),</span>
+            <span class="s1">&#39;average_ai_influence&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;ai_influence_score&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">),</span>
+            <span class="s1">&#39;compliance_score&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_compliance_score</span><span class="p">(</span><span class="n">sessions</span><span class="p">)</span>
+        <span class="p">}</span>
+</code></pre></div>
+
+<h3 id="compliance-features">🔒 Compliance Features</h3>
+<ul>
+<li><strong>Audit Logging</strong>: Track all AI recommendations and human decisions</li>
+<li><strong>Data Retention</strong>: Configurable retention policies</li>
+<li><strong>Access Control</strong>: Role-based permissions</li>
+<li><strong>Encryption</strong>: End-to-end data encryption</li>
+<li><strong>GDPR Compliance</strong>: Data deletion and anonymization</li>
+</ul>
+<hr />
+<h2 id="mlops-pipeline">MLOps Pipeline</h2>
+<h3 id="continuous-training-pipeline">🔄 Continuous Training Pipeline</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># .github/workflows/ml-pipeline.yml</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ML Pipeline</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0</span><span class="nv"> </span><span class="s">2</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">0&#39;</span><span class="w">  </span><span class="c1"># Weekly retraining</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">data-validation</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate Data</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/validate_data.py</span>
+
+<span class="w">  </span><span class="nt">model-training</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpu-latest</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data-validation</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Train Model</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/train_model.py</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Evaluate Model</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/evaluate_model.py</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy if Improved</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python scripts/deploy_model.py</span>
+<span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">steps.evaluate.outputs.improved == &#39;true&#39;</span>
+</code></pre></div>
+
+<h3 id="model-monitoring">📊 Model Monitoring</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">ModelMonitor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;latency&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;drift_score&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;data_quality&#39;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">log_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">,</span> <span class="n">latency</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span> <span class="o">==</span> <span class="n">ground_truth</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;latency&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">latency</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_for_drift</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">check_for_drift</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">recent_accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">100</span><span class="p">:])</span>
+        <span class="n">baseline_accuracy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1000</span><span class="p">:</span><span class="o">-</span><span class="mi">100</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">recent_accuracy</span> <span class="o">&lt;</span> <span class="n">baseline_accuracy</span> <span class="o">*</span> <span class="mf">0.95</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trigger_retraining</span><span class="p">()</span>
+</code></pre></div>
+
+<hr />
+<h2 id="business-metrics-roi">Business Metrics &amp; ROI</h2>
+<h3 id="roi-calculator">💰 ROI Calculator</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">BusinessMetrics</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;time_savings&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># Hours saved per contract</span>
+            <span class="s1">&#39;accuracy_improvement&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># vs manual review</span>
+            <span class="s1">&#39;cost_reduction&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># $ saved per contract</span>
+            <span class="s1">&#39;risk_detection_rate&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># % of risks identified</span>
+            <span class="s1">&#39;false_positive_rate&#39;</span><span class="p">:</span> <span class="mi">0</span>  <span class="c1"># % of false alarms</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">calculate_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contracts_processed</span><span class="p">,</span> <span class="n">avg_contract_value</span><span class="p">):</span>
+        <span class="n">time_savings</span> <span class="o">=</span> <span class="n">contracts_processed</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;time_savings&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">150</span>  <span class="c1"># $150/hour</span>
+        <span class="n">risk_avoidance</span> <span class="o">=</span> <span class="n">contracts_processed</span> <span class="o">*</span> <span class="n">avg_contract_value</span> <span class="o">*</span> <span class="mf">0.05</span>  <span class="c1"># 5% risk reduction</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">time_savings</span> <span class="o">+</span> <span class="n">risk_avoidance</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_investment</span>
+</code></pre></div>
+
+<h3 id="key-performance-indicators">📈 Key Performance Indicators</h3>
+<ul>
+<li><strong>Time Savings</strong>: 80% reduction in contract review time</li>
+<li><strong>Cost Reduction</strong>: $500-2000 per contract reviewed</li>
+<li><strong>Risk Mitigation</strong>: 95% detection rate for critical clauses</li>
+<li><strong>Scalability</strong>: Process 1000+ contracts/day</li>
+<li><strong>User Satisfaction</strong>: &gt;90% positive feedback</li>
+</ul>
+<hr />
+<h2 id="deployment-strategy">Deployment Strategy</h2>
+<h3 id="docker-containerization">🐳 Docker Containerization</h3>
+<div class="codehilite"><pre><span></span><code><span class="c"># Dockerfile</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9-slim</span>
+
+<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
+
+<span class="k">COPY</span><span class="w"> </span>requirements.txt<span class="w"> </span>.
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+
+<span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
+
+<span class="k">EXPOSE</span><span class="w"> </span><span class="s">8000</span>
+
+<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uvicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;main:app&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--host&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;8000&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<h3 id="cloud-deployment">☁️ Cloud Deployment</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># docker-compose.yml</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">api</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8000:8000&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DATABASE_URL=postgresql://user:pass@db:5432/legalai</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
+
+<span class="w">  </span><span class="nt">db</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:13</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">POSTGRES_DB=legalai</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">POSTGRES_USER=user</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">POSTGRES_PASSWORD=pass</span>
+
+<span class="w">  </span><span class="nt">redis</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis:6-alpine</span>
+</code></pre></div>
+
+<h3 id="production-deployment">🚀 Production Deployment</h3>
+<ol>
+<li><strong>AWS/GCP Setup</strong>: Configure cloud infrastructure</li>
+<li><strong>Load Balancer</strong>: Set up application load balancer</li>
+<li><strong>Auto Scaling</strong>: Configure auto-scaling groups</li>
+<li><strong>Monitoring</strong>: Set up CloudWatch/Prometheus</li>
+<li><strong>SSL/TLS</strong>: Configure HTTPS certificates</li>
+</ol>
+<hr />
+<h2 id="testing-quality-assurance">Testing &amp; Quality Assurance</h2>
+<h3 id="testing-strategy">🧪 Testing Strategy</h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">Mock</span><span class="p">,</span> <span class="n">patch</span>
+
+<span class="k">class</span> <span class="nc">TestContractAnalysis</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">test_clause_extraction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Test clause extraction accuracy</span>
+        <span class="n">contract_text</span> <span class="o">=</span> <span class="s2">&quot;This agreement shall be governed by the laws of California.&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">extract_clauses</span><span class="p">(</span><span class="n">contract_text</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="s1">&#39;governing_law&#39;</span> <span class="ow">in</span> <span class="n">result</span>
+        <span class="k">assert</span> <span class="s1">&#39;California&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;governing_law&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">test_risk_scoring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Test risk scoring consistency</span>
+        <span class="n">clauses</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;uncapped_liability&#39;</span><span class="p">:</span> <span class="s1">&#39;Party A shall have unlimited liability&#39;</span><span class="p">}</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">calculate_risk_score</span><span class="p">(</span><span class="n">clauses</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.5</span>  <span class="c1"># High risk clause</span>
+
+    <span class="k">def</span> <span class="nf">test_api_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Test API functionality</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/analyze&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">test_file</span><span class="p">})</span>
+        <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+        <span class="k">assert</span> <span class="s2">&quot;risk_score&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="c1"># Integration tests</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span> <span class="nf">test_end_to_end_workflow</span><span class="p">():</span>
+    <span class="c1"># Test complete workflow</span>
+    <span class="k">pass</span>
+</code></pre></div>
+
+<h3 id="quality-metrics">📊 Quality Metrics</h3>
+<ul>
+<li><strong>Unit Test Coverage</strong>: &gt;90%</li>
+<li><strong>Integration Test Coverage</strong>: &gt;80%</li>
+<li><strong>Performance Tests</strong>: &lt;2s response time</li>
+<li><strong>Load Tests</strong>: 1000+ concurrent users</li>
+<li><strong>Security Tests</strong>: OWASP compliance</li>
+</ul>
+<hr />
+<h2 id="security-compliance">Security &amp; Compliance</h2>
+<h3 id="security-implementation">🔐 Security Implementation</h3>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">cryptography.fernet</span> <span class="kn">import</span> <span class="n">Fernet</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="k">class</span> <span class="nc">SecurityManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span> <span class="o">=</span> <span class="n">Fernet</span><span class="p">(</span><span class="n">Fernet</span><span class="o">.</span><span class="n">generate_key</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">encrypt_contract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cipher</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">contract_data</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">hash_contract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">contract_data</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">validate_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">contract_id</span><span class="p">):</span>
+        <span class="c1"># Implement access control</span>
+        <span class="k">pass</span>
+</code></pre></div>
+
+<h3 id="security-features">🛡️ Security Features</h3>
+<ul>
+<li><strong>Data Encryption</strong>: AES-256 encryption at rest and in transit</li>
+<li><strong>Access Control</strong>: Role-based permissions</li>
+<li><strong>Audit Logging</strong>: Complete audit trail</li>
+<li><strong>Input Validation</strong>: Sanitize all inputs</li>
+<li><strong>Rate Limiting</strong>: Prevent abuse</li>
+<li><strong>HTTPS</strong>: Secure communication</li>
+</ul>
+<hr />
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="optimization-strategies">⚡ Optimization Strategies</h3>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">PerformanceOptimizer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_cached_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_hash</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">contract_hash</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cache_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contract_hash</span><span class="p">,</span> <span class="n">analysis_result</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">contract_hash</span><span class="p">]</span> <span class="o">=</span> <span class="n">analysis_result</span>
+
+    <span class="k">def</span> <span class="nf">optimize_model_inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="c1"># Model quantization and optimization</span>
+        <span class="n">quantized_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">quantization</span><span class="o">.</span><span class="n">quantize_dynamic</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span> <span class="p">{</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">},</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">qint8</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">quantized_model</span>
+</code></pre></div>
+
+<h3 id="performance-targets">📈 Performance Targets</h3>
+<ul>
+<li><strong>Response Time</strong>: &lt;2 seconds for contract analysis</li>
+<li><strong>Throughput</strong>: 100+ contracts/hour</li>
+<li><strong>Concurrent Users</strong>: 50+ simultaneous users</li>
+<li><strong>Memory Usage</strong>: &lt;4GB RAM per instance</li>
+<li><strong>CPU Usage</strong>: &lt;80% average utilization</li>
+</ul>
+<hr />
+<h2 id="documentation-portfolio">Documentation &amp; Portfolio</h2>
+<h3 id="documentation-structure">📚 Documentation Structure</h3>
+<div class="codehilite"><pre><span></span><code>docs/
+├── README.md
+├── API_Documentation.md
+├── Deployment_Guide.md
+├── User_Manual.md
+├── Technical_Architecture.md
+├── API_Reference.md
+└── Troubleshooting.md
+</code></pre></div>
+
+<h3 id="portfolio-elements">🎯 Portfolio Elements</h3>
+<ul>
+<li><strong>Live Demo</strong>: Deployed application</li>
+<li><strong>GitHub Repository</strong>: Well-documented code</li>
+<li><strong>Technical Blog</strong>: Write about legal AI challenges</li>
+<li><strong>Video Demo</strong>: Screen recording of system in action</li>
+<li><strong>Case Studies</strong>: Real-world usage examples</li>
+<li><strong>Performance Metrics</strong>: Quantifiable results</li>
+</ul>
+<h3 id="portfolio-metrics">📊 Portfolio Metrics</h3>
+<ul>
+<li><strong>GitHub Stars</strong>: Target 100+ stars</li>
+<li><strong>Demo Visits</strong>: Track unique visitors</li>
+<li><strong>Download Count</strong>: Monitor demo usage</li>
+<li><strong>Feedback Score</strong>: User satisfaction ratings</li>
+</ul>
+<hr />
+<h2 id="employment-strategy">Employment Strategy</h2>
+<h3 id="target-companies">🎯 Target Companies</h3>
+<ol>
+<li><strong>Legal Tech Startups</strong>: DocuSign, LegalZoom, Clio</li>
+<li><strong>Law Firms</strong>: Big Law firms with tech initiatives</li>
+<li><strong>Enterprise</strong>: Fortune 500 companies with legal departments</li>
+<li><strong>Consulting</strong>: McKinsey, BCG, Deloitte</li>
+<li><strong>Tech Companies</strong>: Google, Microsoft, Amazon</li>
+</ol>
+<h3 id="networking-strategy">📈 Networking Strategy</h3>
+<ul>
+<li><strong>LinkedIn Content</strong>: Share insights about legal AI</li>
+<li><strong>Conference Talks</strong>: Present at legal tech conferences</li>
+<li><strong>Open Source</strong>: Contribute to legal AI projects</li>
+<li><strong>Meetups</strong>: Attend legal tech meetups</li>
+<li><strong>Research Papers</strong>: Publish findings</li>
+</ul>
+<h3 id="interview-preparation">💼 Interview Preparation</h3>
+<ul>
+<li><strong>Technical Deep Dive</strong>: Be ready to explain every component</li>
+<li><strong>Business Case</strong>: Understand ROI and market opportunity</li>
+<li><strong>System Design</strong>: Design scalable architecture</li>
+<li><strong>Code Review</strong>: Review and improve code</li>
+<li><strong>Demo Presentation</strong>: Present live demo confidently</li>
+</ul>
+<hr />
+<h2 id="success-metrics">Success Metrics</h2>
+<h3 id="technical-success-metrics">🎯 Technical Success Metrics</h3>
+<ul>
+<li><strong>Model Accuracy</strong>: &gt;85% on CUAD test set</li>
+<li><strong>Risk Scoring Correlation</strong>: &gt;0.8 with expert assessment</li>
+<li><strong>API Response Time</strong>: &lt;2 seconds</li>
+<li><strong>System Uptime</strong>: &gt;99.5%</li>
+<li><strong>Code Coverage</strong>: &gt;90%</li>
+</ul>
+<h3 id="employment-success-metrics">💼 Employment Success Metrics</h3>
+<ul>
+<li><strong>Portfolio Visits</strong>: 10x more than typical projects</li>
+<li><strong>Interview Requests</strong>: 5x higher response rate</li>
+<li><strong>Salary Negotiation</strong>: 20-30% higher offers</li>
+<li><strong>Role Level</strong>: Senior/Lead positions</li>
+<li><strong>Company Tier</strong>: Top-tier companies</li>
+</ul>
+<h3 id="business-impact-metrics">📊 Business Impact Metrics</h3>
+<ul>
+<li><strong>Time Savings</strong>: 80% reduction in review time</li>
+<li><strong>Cost Reduction</strong>: $500-2000 per contract</li>
+<li><strong>Risk Detection</strong>: 95% of critical clauses</li>
+<li><strong>User Adoption</strong>: &gt;90% satisfaction rate</li>
+<li><strong>ROI</strong>: 300%+ return on investment</li>
+</ul>
+<hr />
+<h2 id="weekly-progress-tracking">Weekly Progress Tracking</h2>
+<h3 id="week-1-checklist">📅 Week 1 Checklist</h3>
+<ul>
+<li>[ ] Development environment setup</li>
+<li>[ ] CUAD data preprocessing</li>
+<li>[ ] Basic clause extraction model</li>
+<li>[ ] Risk scoring algorithm</li>
+<li>[ ] Clause highlighting system</li>
+</ul>
+<h3 id="week-2-checklist">📅 Week 2 Checklist</h3>
+<ul>
+<li>[ ] Streamlit dashboard</li>
+<li>[ ] Vector database setup</li>
+<li>[ ] Similar clause retrieval</li>
+<li>[ ] SHAP explanations</li>
+<li>[ ] MVP deployment</li>
+</ul>
+<h3 id="week-3-checklist">📅 Week 3 Checklist</h3>
+<ul>
+<li>[ ] FastAPI backend</li>
+<li>[ ] Authentication system</li>
+<li>[ ] File upload/processing</li>
+<li>[ ] RESTful endpoints</li>
+<li>[ ] Request validation</li>
+</ul>
+<h3 id="week-4-checklist">📅 Week 4 Checklist</h3>
+<ul>
+<li>[ ] MLflow tracking</li>
+<li>[ ] Model versioning</li>
+<li>[ ] Performance monitoring</li>
+<li>[ ] Automated retraining</li>
+<li>[ ] Alerting system</li>
+</ul>
+<h3 id="month-2-checklist">📅 Month 2 Checklist</h3>
+<ul>
+<li>[ ] Advanced RAG with LLM</li>
+<li>[ ] Multi-modal processing</li>
+<li>[ ] Alternative suggestions</li>
+<li>[ ] Precedent analysis</li>
+<li>[ ] Risk trend analysis</li>
+</ul>
+<h3 id="month-3-checklist">📅 Month 3 Checklist</h3>
+<ul>
+<li>[ ] Cloud deployment</li>
+<li>[ ] Load testing</li>
+<li>[ ] Security hardening</li>
+<li>[ ] Documentation</li>
+<li>[ ] Demo preparation</li>
+</ul>
+<hr />
+<h2 id="risk-mitigation">Risk Mitigation</h2>
+<h3 id="technical-risks">⚠️ Technical Risks</h3>
+<ul>
+<li><strong>Model Performance</strong>: Fallback to rule-based system</li>
+<li><strong>Scalability Issues</strong>: Auto-scaling and load balancing</li>
+<li><strong>Data Quality</strong>: Robust validation and cleaning</li>
+<li><strong>Security Vulnerabilities</strong>: Regular security audits</li>
+</ul>
+<h3 id="employment-risks">💼 Employment Risks</h3>
+<ul>
+<li><strong>Market Saturation</strong>: Focus on unique differentiators</li>
+<li>[ ] Economic Downturn**: Build recession-proof skills</li>
+<li><strong>Competition</strong>: Continuous innovation and improvement</li>
+<li><strong>Technology Changes</strong>: Stay current with latest trends</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>This methodology provides a comprehensive roadmap for building a production-ready Contract Review and Risk Analysis System that will significantly enhance your employment prospects in the legal tech industry. The focus on risk scoring, RAG implementation, compliance tracking, and production deployment creates a unique value proposition that sets you apart from typical ML projects.</p>
+<p><strong>Key Success Factors:</strong>
+1. <strong>Focus on Risk</strong>: Prioritize risk scoring over pure classification
+2. <strong>RAG Integration</strong>: Add precedent analysis and suggestions
+3. <strong>Production Ready</strong>: Full MLOps pipeline with monitoring
+4. <strong>Business Focus</strong>: ROI metrics and compliance tracking
+5. <strong>Portfolio Quality</strong>: Polished demo and documentation</p>
+<p><strong>Next Steps:</strong>
+1. Set up development environment
+2. Begin Phase 1 implementation
+3. Track progress weekly
+4. Iterate based on feedback
+5. Prepare for deployment and demo</p>
+<hr />
+<p><em>This document should be reviewed and updated weekly to track progress and ensure alignment with project goals.</em></p>
+        
+        <div class="progress-tracker">
+            <h3>📋 Project Progress Tracker</h3>
+            <p><strong>Last Updated:</strong> Tue Sep  2 12:15:14 BST 2025</p>
+            <p><strong>Next Review:</strong> Weekly</p>
+        </div>
+    </body>
+    </html>
+    

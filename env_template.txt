@@ -1,0 +1,124 @@
+# Environment Variables Template
+# Copy this file to .env and fill in your actual credentials
+# DO NOT commit .env to version control
+
+# Project Configuration
+PROJECT_NAME="Contract Review & Risk Analysis System"
+VERSION="1.0.0"
+AUTHOR="Mohammad Babaie"
+EMAIL="mj.babaie@gmail.com"
+GITHUB_URL="https://github.com/Muh76"
+LINKEDIN_URL="https://www.linkedin.com/in/mohammadbabaie/"
+
+# API Configuration
+API_HOST="0.0.0.0"
+API_PORT=8000
+API_RELOAD=true
+
+# OpenAI Configuration
+OPENAI_API_KEY="your-openai-api-key-here"
+OPENAI_MODEL="gpt-4"
+OPENAI_MAX_TOKENS=500
+OPENAI_TEMPERATURE=0.3
+
+# Azure OpenAI Configuration
+AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
+AZURE_OPENAI_API_KEY="your-azure-openai-api-key-here"
+AZURE_OPENAI_API_VERSION="2024-02-15-preview"
+AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4"
+
+# Google Cloud Configuration
+GOOGLE_CLOUD_PROJECT="your-gcp-project-id"
+GOOGLE_CLOUD_STORAGE_BUCKET="your-bucket-name"
+GOOGLE_APPLICATION_CREDENTIALS="path/to/service-account-key.json"
+
+# Database Configuration
+DATABASE_URL="postgresql://user:password@localhost:5432/legalai"
+REDIS_URL="redis://localhost:6379"
+
+# MLflow Configuration
+MLFLOW_TRACKING_URI="http://localhost:5000"
+MLFLOW_EXPERIMENT_NAME="legal-contract-analysis"
+
+# Security Configuration
+SECRET_KEY="your-secret-key-here"
+ALGORITHM="HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# File Processing Configuration
+ALLOWED_EXTENSIONS=["pdf", "txt", "docx"]
+MAX_FILE_SIZE=10485760  # 10MB
+
+# Risk Scoring Configuration
+RISK_WEIGHTS={
+    "uncapped_liability": 0.25,
+    "non_compete": 0.20,
+    "ip_assignment": 0.15,
+    "termination_convenience": 0.10,
+    "audit_rights": 0.05,
+    "confidentiality": 0.10,
+    "governing_law": 0.05,
+    "dispute_resolution": 0.10
+}
+
+# CUAD Dataset Categories
+CUAD_CATEGORIES=[
+    "Document Type",
+    "Parties",
+    "Agreement Date",
+    "Effective Date",
+    "Expiration Date",
+    "Renewal Term",
+    "Contract Value",
+    "Payment Terms",
+    "Notices",
+    "Termination for Convenience",
+    "Termination for Cause",
+    "Governing Law",
+    "Most Favored Nation",
+    "Non-Compete",
+    "Non-Solicitation",
+    "Change of Control",
+    "Anti-Assignment",
+    "Revenue/Profit Sharing",
+    "Audit Rights",
+    "Insurance",
+    "Subcontracting",
+    "Minimum Commitment",
+    "Price Reduction in the Event of a Rate Reduction",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer",
+    "Price Reduction in the Event of a Rate Reduction - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation - Most Favored Customer - Most Favored Nation"
+]
+
+# Logging Configuration
+LOG_LEVEL="INFO"
+LOG_FORMAT="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+LOG_FILE="logs/legalai.log"
+
+# Monitoring Configuration
+PROMETHEUS_PORT=9090
+GRAFANA_PORT=3000
+
+# Development Configuration
+DEBUG=true
+TESTING=false
+ENVIRONMENT="development"
