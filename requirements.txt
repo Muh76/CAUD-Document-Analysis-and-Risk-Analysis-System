@@ -134,7 +134,3 @@ holoviews>=1.17.0
 jupyterlab>=4.0.0
 ipywidgets>=8.0.0
 voila>=0.4.0
-
-# Environment Management
-conda>=23.5.0
-mamba>=1.4.0
