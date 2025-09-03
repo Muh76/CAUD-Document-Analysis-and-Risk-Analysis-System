@@ -9,79 +9,26 @@ spacy>=3.6.0
 nltk>=3.8.0
 textblob>=0.17.0
 
-# Vector Database & RAG (Future Phases)
-# torch>=2.0.0
-# torchvision>=0.15.0
-# transformers>=4.30.0
-# sentence-transformers>=2.2.0
-# tokenizers>=0.13.0
-# accelerate>=0.20.0
-# peft>=0.4.0
-# bitsandbytes>=0.41.0
-# chromadb>=0.4.0
-# faiss-cpu>=1.7.4
-# langchain>=0.0.200
-# openai>=1.0.0
-
-# Web Framework & API (Future Phases)
-# fastapi>=0.100.0
-# uvicorn[standard]>=0.23.0
-# python-multipart>=0.0.6
-# pydantic>=2.0.0
-# pydantic-settings>=2.0.0
-
-# Frontend & Dashboard (Future Phases)
-# streamlit>=1.25.0
-# plotly>=5.15.0
-# dash>=2.11.0
-# dash-bootstrap-components>=1.4.0
-
-# Database & Storage (Future Phases)
-# sqlalchemy>=2.0.0
-# psycopg2-binary>=2.9.0
-# redis>=4.6.0
-# minio>=7.1.0
-
-# MLOps & Monitoring (Future Phases)
-# mlflow>=2.6.0
-# wandb>=0.15.0
-# prometheus-client>=0.17.0
-# grafana-api>=1.0.3
-
 # Data Processing & EDA
 jupyter>=1.0.0
 ipykernel>=6.25.0
 matplotlib>=3.7.0
 seaborn>=0.12.0
-shap>=0.42.0
 
 # Document Processing
 pypdf2>=3.0.0
 python-docx>=0.8.11
 openpyxl>=3.1.0
-pytesseract>=0.3.10
 pillow>=10.0.0
-
-# Security & Authentication (Future Phases)
-# python-jose[cryptography]>=3.3.0
-# passlib[bcrypt]>=1.7.4
-# cryptography>=41.0.0
 
 # Testing
 pytest>=7.4.0
-pytest-asyncio>=0.21.0
 pytest-cov>=4.1.0
-pytest-mock>=3.11.0
-httpx>=0.24.0
 
 # Code Quality & Development
 black>=23.7.0
 flake8>=6.0.0
-isort>=5.12.0
 mypy>=1.5.0
-pre-commit>=3.3.0
-bandit>=1.7.5
-pydocstyle>=6.3.0
 
 # Data Validation
 pandera>=0.17.2
@@ -96,38 +43,14 @@ click>=8.1.0
 python-dotenv>=1.0.0
 rich>=13.4.0
 tqdm>=4.65.0
-toml>=0.10.0
 
 # Data Versioning
 dvc>=3.20.0
-dvc[gdrive]>=3.20.0
-
-# Performance & Caching (Future Phases)
-# celery>=5.3.0
-# cachetools>=5.3.0
-
-# Monitoring & Logging (Future Phases)
-# structlog>=23.1.0
-# sentry-sdk>=1.28.0
-
-# Cloud & Deployment (Future Phases)
-# boto3>=1.28.0
-# google-cloud-storage>=2.10.0
-# docker>=6.1.0
-# kubernetes>=26.1.0
-
-# Additional ML Libraries (Future Phases)
-# xgboost>=1.7.0
-# lightgbm>=4.0.0
-# catboost>=1.2.0
-# optuna>=3.2.0
 
 # Visualization
 bokeh>=3.2.0
 altair>=5.1.0
-holoviews>=1.17.0
 
 # Development Tools
 jupyterlab>=4.0.0
 ipywidgets>=8.0.0
-voila>=0.4.0
