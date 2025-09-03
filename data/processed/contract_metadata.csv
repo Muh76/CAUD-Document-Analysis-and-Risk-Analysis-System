@@ -1,0 +1,3 @@
+contract_id,contract_type,parties,effective_date,jurisdiction,total_clauses,file_size
+CONTRACT_001,Software License,"['TechCorp Inc.', 'ClientCo Ltd.']",2024-01-01,California,5,1024
+CONTRACT_002,Service Agreement,"['ServiceProvider LLC', 'Customer Inc.']",2024-03-15,New York,6,1536

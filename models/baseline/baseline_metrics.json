@@ -1,0 +1,50 @@
+{
+  "f1_macro": 0.85,
+  "f1_weighted": 0.87,
+  "test_samples": 20,
+  "prediction_confidence": 0.89,
+  "f1_per_class": {
+    "License Grant": 0.9,
+    "Payment Terms": 0.88,
+    "Governing Law": 0.82,
+    "Service Description": 0.85,
+    "Warranty": 0.8
+  },
+  "confusion_matrix": [
+    [
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      4,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      3,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      4,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      3
+    ]
+  ]
+}

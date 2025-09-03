@@ -1,0 +1,52 @@
+# Contract Analysis System Configuration
+# Phase 1: Foundations & Data
+
+# Data paths
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  enriched_data: "data/enriched"
+  models: "models/baseline"
+  logs: "logs"
+  tests: "tests"
+  docs: "docs"
+
+# CUAD dataset configuration
+cuad:
+  file_path: "data/raw/CUAD_v1.json"
+  max_contracts: 100  # Limit for demo purposes
+  validation_enabled: true
+
+# Processing configuration
+processing:
+  min_clause_length: 50
+  max_clause_length: 5000
+  confidence_threshold: 0.7
+  batch_size: 10
+
+# NER configuration
+ner:
+  model: "en_core_web_sm"
+  entity_types: ["PERSON", "ORG", "DATE", "MONEY", "GPE"]
+  custom_patterns:
+    - "Indemnified Party"
+    - "Force Majeure"
+    - "Change of Control"
+    - "Material Adverse Effect"
+
+# Validation configuration
+validation:
+  enabled: true
+  strict_mode: false
+  max_errors: 10
+  required_fields:
+    - "contract_id"
+    - "contract_type"
+    - "parties"
+    - "effective_date"
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/phase1.log"
