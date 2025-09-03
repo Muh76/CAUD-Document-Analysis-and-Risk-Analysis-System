@@ -7,10 +7,7 @@ import pytest
 import pandas as pd
 import numpy as np
 import json
-import tempfile
-import os
-from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 # Import modules to test
 import sys

@@ -5,16 +5,22 @@ FastAPI Backend for Contract Review & Risk Analysis System
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
-from fastapi.responses import JSONResponse
 import uvicorn
-import os
 import sys
 from pathlib import Path
 
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.config.config import *
+from src.config.config import (
+    PROJECT_NAME,
+    VERSION,
+    AUTHOR,
+    EMAIL,
+    API_HOST,
+    API_PORT,
+    API_RELOAD,
+)
 from src.models.contract_analyzer import ContractAnalyzer
 from src.models.risk_scorer import RiskScorer
 from src.utils.file_processor import FileProcessor
@@ -24,7 +30,9 @@ from src.utils.auth import AuthManager
 app = FastAPI(
     title=PROJECT_NAME,
     version=VERSION,
-    description="Production-ready legal AI system for contract review and risk analysis",
+    description=(
+        "Production-ready legal AI system for contract review and risk analysis"
+    ),
     contact={"name": AUTHOR, "email": EMAIL, "url": "https://github.com/Muh76"},
 )
 
