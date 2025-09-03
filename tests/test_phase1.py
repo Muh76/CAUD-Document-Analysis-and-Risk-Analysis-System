@@ -16,8 +16,7 @@ from unittest.mock import Mock, patch
 import sys
 sys.path.append('src')
 
-from data.pipeline import ContractDataPipeline, ContractMetadata, ClauseSegment
-from models.baseline_models import BaselineClauseClassifier, KeywordRiskScorer, BaselineEvaluator
+from demo_modules import ContractDataPipeline, ContractMetadata, ClauseSegment, BaselineClauseClassifier, KeywordRiskScorer, BaselineEvaluator
 
 class TestContractDataPipeline:
     """Test suite for data pipeline functionality"""

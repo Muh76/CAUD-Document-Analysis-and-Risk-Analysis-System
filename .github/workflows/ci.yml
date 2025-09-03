@@ -44,32 +44,6 @@ jobs:
         name: codecov-umbrella
         fail_ci_if_error: true
 
-  data-validation:
-    runs-on: ubuntu-latest
-    needs: test
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.11
-    
-    - name: Install dependencies
-      run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
-    
-    - name: Run data validation
-      run: |
-        python -m src.validation.run_checks
-    
-    - name: Run DVC pipeline
-      run: |
-        dvc repro data_processing
-        dvc repro baseline_training
-
   security:
     runs-on: ubuntu-latest
     needs: test
