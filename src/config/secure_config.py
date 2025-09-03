@@ -64,21 +64,40 @@ RISK_WEIGHTS = {
     "audit_rights": 0.05,
     "confidentiality": 0.10,
     "governing_law": 0.05,
-    "dispute_resolution": 0.10
+    "dispute_resolution": 0.10,
 }
 
 # CUAD Dataset Categories (simplified for readability)
 CUAD_CATEGORIES = [
-    "Document Type", "Parties", "Agreement Date", "Effective Date", "Expiration Date",
-    "Renewal Term", "Contract Value", "Payment Terms", "Notices", "Termination for Convenience",
-    "Termination for Cause", "Governing Law", "Most Favored Nation", "Non-Compete", "Non-Solicitation",
-    "Change of Control", "Anti-Assignment", "Revenue/Profit Sharing", "Audit Rights", "Insurance",
-    "Subcontracting", "Minimum Commitment"
+    "Document Type",
+    "Parties",
+    "Agreement Date",
+    "Effective Date",
+    "Expiration Date",
+    "Renewal Term",
+    "Contract Value",
+    "Payment Terms",
+    "Notices",
+    "Termination for Convenience",
+    "Termination for Cause",
+    "Governing Law",
+    "Most Favored Nation",
+    "Non-Compete",
+    "Non-Solicitation",
+    "Change of Control",
+    "Anti-Assignment",
+    "Revenue/Profit Sharing",
+    "Audit Rights",
+    "Insurance",
+    "Subcontracting",
+    "Minimum Commitment",
 ]
 
 # Logging Configuration
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-LOG_FORMAT = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+LOG_FORMAT = os.getenv(
+    "LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 LOG_FILE = os.getenv("LOG_FILE", "logs/legalai.log")
 
 # Monitoring Configuration
@@ -90,11 +109,13 @@ DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 TESTING = os.getenv("TESTING", "false").lower() == "true"
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
+
 def hash_sensitive_data(data: str) -> str:
     """Hash sensitive data for logging purposes"""
     if not data:
         return "NOT_SET"
     return hashlib.sha256(data.encode()).hexdigest()[:8] + "..."
+
 
 def get_config_summary() -> Dict[str, Any]:
     """Get a safe configuration summary for logging"""
@@ -117,20 +138,22 @@ def get_config_summary() -> Dict[str, Any]:
         "redis_url_set": bool(REDIS_URL),
         "environment": ENVIRONMENT,
         "debug": DEBUG,
-        "testing": TESTING
+        "testing": TESTING,
     }
+
 
 def validate_configuration() -> List[str]:
     """Validate that required configuration is present"""
     errors = []
-    
+
     if not OPENAI_API_KEY:
         errors.append("OPENAI_API_KEY is required")
-    
+
     if not SECRET_KEY or SECRET_KEY == "your-secret-key-change-this-in-production":
         errors.append("SECRET_KEY should be set to a secure value")
-    
+
     return errors
+
 
 # Security utilities
 def mask_api_key(api_key: str) -> str:
@@ -141,9 +164,11 @@ def mask_api_key(api_key: str) -> str:
         return "*" * len(api_key)
     return api_key[:4] + "*" * (len(api_key) - 8) + api_key[-4:]
 
+
 def is_production() -> bool:
     """Check if running in production environment"""
     return ENVIRONMENT.lower() == "production"
+
 
 def is_development() -> bool:
     """Check if running in development environment"""
