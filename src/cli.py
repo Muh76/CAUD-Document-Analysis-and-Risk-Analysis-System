@@ -137,26 +137,38 @@ def validate(
     typer.echo("✅ Running data validation...")
     
     try:
+        # Import validation module directly
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).parent))
+        
+        from validation.run_checks import DataValidator
+        
         # Load configuration
         config = load_config(config_path)
         config['data_dir'] = data_dir
         
-        # Initialize pipeline
-        pipeline = ContractDataPipeline(config)
-        
         # Run validation
-        validation_results = pipeline.validate_data(data_dir)
+        validator = DataValidator(config)
+        validation_results = validator.run_comprehensive_validation(data_dir)
         
         # Display results
         typer.echo("\n📊 Validation Results:")
-        for check_name, result in validation_results.items():
-            status = "✅ PASS" if result['passed'] else "❌ FAIL"
-            typer.echo(f"  {check_name}: {status}")
-            if not result['passed']:
-                typer.echo(f"    Error: {result['error']}")
+        for validation_type, result in validation_results.items():
+            if validation_type == "overall_passed":
+                continue
+                
+            typer.echo(f"\n{validation_type.upper()}:")
+            if isinstance(result, dict):
+                for check_name, check_result in result.items():
+                    if isinstance(check_result, dict) and "passed" in check_result:
+                        status = "✅ PASS" if check_result["passed"] else "❌ FAIL"
+                        typer.echo(f"  {check_name}: {status}")
+                        if not check_result["passed"] and check_result.get("error"):
+                            typer.echo(f"    Error: {check_result['error']}")
         
         # Check if all validations passed
-        all_passed = all(result['passed'] for result in validation_results.values())
+        all_passed = validation_results.get('overall_passed', False)
         
         if all_passed:
             typer.echo("\n🎉 All validations passed!")

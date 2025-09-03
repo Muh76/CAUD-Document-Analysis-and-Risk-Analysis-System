@@ -1,0 +1,17 @@
+{
+  "pandera": {
+    "contract_metadata": {
+      "passed": true,
+      "error": null
+    },
+    "clause_segments": {
+      "passed": true,
+      "error": null
+    }
+  },
+  "great_expectations": {
+    "ge_available": false,
+    "error": "Great Expectations not available"
+  },
+  "overall_passed": true
+}
