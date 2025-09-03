@@ -108,7 +108,7 @@ Contract Review & Risk Analysis System/
 ├── docker-compose.yml             # Multi-service deployment
 ├── Dockerfile                     # Container definition
 ├── requirements.txt               # Python dependencies
-├── environment.yml               # Conda environment
+├── environment.yml               # Conda environment (optional)
 ├── .env                          # Environment variables (not in repo)
 ├── env_template.txt              # Environment template
 ├── .gitignore                    # Git ignore rules
@@ -119,18 +119,18 @@ Contract Review & Risk Analysis System/
 
 ### 1. **Clone Repository**
 ```bash
-git clone https://github.com/Muh76/CUAD.git
-cd CUAD
+git clone https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System.git
+cd CAUD-Document-Analysis-and-Risk-Analysis-System
 ```
 
 ### 2. **Set Up Environment**
 ```bash
-# Create conda environment
-conda env create -f environment.yml
-conda activate legal-ai
-
-# Or use pip
+# Recommended: Use pip (simpler, more reliable)
 pip install -r requirements.txt
+
+# Optional: Use conda for local development
+conda env create -f environment.yml
+conda activate contract-analysis
 ```
 
 ### 3. **Configure Credentials**
@@ -144,22 +144,28 @@ cp env_template.txt .env
 # Optional: GOOGLE_CLOUD_PROJECT, GOOGLE_CLOUD_STORAGE_BUCKET
 ```
 
-### 4. **Install Dependencies**
+### 4. **Test System**
 ```bash
-./quick_install.sh
+# Run tests
+pytest tests/ -v
+
+# Run data validation
+python -m src.validation.run_checks
+
+# Test CLI
+python -m src.cli status
 ```
 
-### 5. **Test System**
+### 5. **Launch Application**
 ```bash
-python test_system.py
+# Start API server
+python -m src.api.main
+
+# Start dashboard (in another terminal)
+streamlit run src/dashboard/main.py
 ```
 
-### 6. **Launch Application**
-```bash
-./start.sh
-```
-
-### 7. **Access Applications**
+### 6. **Access Applications**
 - **API Documentation**: http://localhost:8000/docs
 - **Dashboard**: http://localhost:8501
 
