@@ -1,0 +1,5 @@
+clause_id,contract_id,text,clause_type,confidence,text_length,contract_type,parties,text_clean,has_numbers,has_dates,has_currency,split
+contract_002_clause_001,contract_002,All information shall be kept confidential.,confidentiality,0.95,43,service,"['XYZ Inc', 'Jane Smith']",All information shall be kept confidential.,False,False,False,train
+contract_003_clause_001,contract_003,Either party may terminate this agreement with 30 days notice.,termination,0.85,62,nda,"['Tech Corp', 'Consultant LLC']",Either party may terminate this agreement with 30 days notice.,True,False,False,val
+contract_001_clause_001,contract_001,This agreement shall be governed by the laws of California.,governing_law,0.9,59,employment,"['ABC Corp', 'John Doe']",This agreement shall be governed by the laws of California.,False,False,False,test
+contract_001_clause_002,contract_001,"Party A shall be liable for all damages up to $100,000.",liability,0.8,55,employment,"['ABC Corp', 'John Doe']","Party A shall be liable for all damages up to $100,000.",True,False,True,test

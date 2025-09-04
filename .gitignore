@@ -205,3 +205,4 @@ dmypy.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+notebooks/models/inference_pipeline.pkl

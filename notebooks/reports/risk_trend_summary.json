@@ -1,0 +1,23 @@
+{
+  "total_contracts_analyzed": 77,
+  "analysis_period": "1 year",
+  "avg_risk_score": 0.19549892389929138,
+  "high_risk_contracts": 0,
+  "risk_distribution": {
+    "low_risk": 61,
+    "medium_risk": 16,
+    "high_risk": 0
+  },
+  "top_risk_categories": {
+    "Red flag: exclusive": 53,
+    "Red flag: perpetual_term": 49,
+    "Red flag: high_damages": 33,
+    "Red flag: penalty": 22,
+    "Red flag: auto_renewal": 15,
+    "Red flag: unilateral": 6
+  },
+  "trend_files": [
+    "data/processed/risk_trends.csv",
+    "data/processed/high_risk_trends.csv"
+  ]
+}

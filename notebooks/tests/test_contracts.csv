@@ -1,0 +1,3 @@
+contract_id,file_name,contract_type,parties,effective_date,jurisdiction,total_clauses,file_size,parsed_ok
+test_001,test_nda.pdf,NDA,Company A and Company B,2024-01-01,California,5,10000,1
+test_002,test_msa.pdf,MSA,Vendor Corp and Client Inc,2024-02-01,New York,8,15000,1

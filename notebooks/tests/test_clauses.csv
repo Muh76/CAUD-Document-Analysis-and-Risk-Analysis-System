@@ -1,0 +1,4 @@
+clause_id,contract_id,text,text_clean,text_length,clause_type,confidence,has_numbers,has_dates,has_currency,label_0,label_1,label_2,label_3,label_4,label_5,label_6
+test_clause_001,test_001,This Non-Disclosure Agreement shall remain in effect perpetually with unlimited liability for all damages.,This Non-Disclosure Agreement shall remain in effect perpetually with unlimited liability for all damages.,120,confidentiality,0.95,False,False,False,1,0,0,0,0,0,0
+test_clause_002,test_001,"Payment terms: $10,000 due within 30 days of invoice.","Payment terms: $10,000 due within 30 days of invoice.",60,payment,0.88,True,False,True,0,1,0,0,0,0,0
+test_clause_003,test_002,Master Service Agreement for software development services with automatic renewal.,Master Service Agreement for software development services with automatic renewal.,100,services,0.92,False,False,False,0,0,1,0,0,0,0
