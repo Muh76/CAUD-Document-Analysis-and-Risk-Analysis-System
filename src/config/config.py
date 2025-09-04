@@ -35,6 +35,11 @@ MLFLOW_EXPERIMENT_NAME = "contract_review"
 # OpenAI Configuration
 OPENAI_API_KEY = ""  # Set via environment variable
 
+# Azure OpenAI Configuration
+AZURE_OPENAI_ENDPOINT = ""  # Set via environment variable
+AZURE_OPENAI_API_KEY = ""  # Set via environment variable
+AZURE_OPENAI_DEPLOYMENT_NAME = ""  # Set via environment variable
+
 # Vector Database
 CHROMA_PERSIST_DIR = "data/chroma_db"
 

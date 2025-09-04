@@ -15,7 +15,7 @@ from sklearn.preprocessing import LabelEncoder
 import joblib
 import logging
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Tuple, Optional, Any, Union
 import json
 import re
 from datetime import datetime
@@ -38,9 +38,9 @@ class BaselineClauseClassifier:
             min_df=2,
             max_df=0.95,
         )
-        self.model = None
-        self.clause_types = None
-        self.feature_names = None
+        self.model: Optional[Union[LogisticRegression, RandomForestClassifier]] = None
+        self.clause_types: Optional[np.ndarray] = None
+        self.feature_names: Optional[np.ndarray] = None
 
     def prepare_data(self, clauses_df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
         """Prepare data for training"""
@@ -59,7 +59,7 @@ class BaselineClauseClassifier:
         self.feature_names = self.vectorizer.get_feature_names_out()
 
         logger.info(f"Prepared {X.shape[0]} clauses with {X.shape[1]} features")
-        logger.info(f"Clause types: {list(self.clause_types)}")
+        logger.info(f"Clause types: {list(self.clause_types) if self.clause_types is not None else []}")
 
         return X, encoded_labels
 
@@ -87,7 +87,10 @@ class BaselineClauseClassifier:
         cv_scores = cross_val_score(self.model, X, y, cv=5, scoring="f1_macro")
 
         # Predictions
-        y_pred = self.model.predict(X)
+        if self.model is not None:
+            y_pred = self.model.predict(X)
+        else:
+            raise ValueError("Model not trained yet")
 
         # Metrics
         metrics = {
@@ -98,7 +101,7 @@ class BaselineClauseClassifier:
             "f1_weighted": f1_score(y, y_pred, average="weighted"),
             "training_samples": len(y),
             "feature_count": X.shape[1],
-            "clause_types": list(self.clause_types),
+            "clause_types": list(self.clause_types) if self.clause_types is not None else [],
             "training_timestamp": datetime.now().isoformat(),
         }
 
@@ -119,8 +122,11 @@ class BaselineClauseClassifier:
         X = self.vectorizer.transform(texts)
 
         # Predict
-        predictions = self.model.predict(X)
-        probabilities = self.model.predict_proba(X)
+        if self.model is not None:
+            predictions = self.model.predict(X)
+            probabilities = self.model.predict_proba(X)
+        else:
+            raise ValueError("Model not trained yet")
 
         # Get confidence scores (max probability)
         confidence_scores = np.max(probabilities, axis=1)
@@ -136,19 +142,20 @@ class BaselineClauseClassifier:
 
         feature_importance = {}
 
-        if hasattr(self.model, "coef_"):
-            # Logistic Regression
-            for i, clause_type in enumerate(self.clause_types):
-                coef = self.model.coef_[i]
-                feature_scores = list(zip(self.feature_names, coef))
-                feature_scores.sort(key=lambda x: abs(x[1]), reverse=True)
-                feature_importance[clause_type] = feature_scores[:top_n]
-        elif hasattr(self.model, "feature_importances_"):
-            # Random Forest
-            importances = self.model.feature_importances_
-            feature_scores = list(zip(self.feature_names, importances))
-            feature_scores.sort(key=lambda x: x[1], reverse=True)
-            feature_importance["overall"] = feature_scores[:top_n]
+        if self.model is not None and self.clause_types is not None and self.feature_names is not None:
+            if hasattr(self.model, "coef_"):
+                # Logistic Regression
+                for i, clause_type in enumerate(self.clause_types):
+                    coef = self.model.coef_[i]
+                    feature_scores = list(zip(self.feature_names, coef))
+                    feature_scores.sort(key=lambda x: abs(x[1]), reverse=True)
+                    feature_importance[clause_type] = feature_scores[:top_n]
+            elif hasattr(self.model, "feature_importances_"):
+                # Random Forest
+                importances = self.model.feature_importances_
+                feature_scores = list(zip(self.feature_names, importances))
+                feature_scores.sort(key=lambda x: x[1], reverse=True)
+                feature_importance["overall"] = feature_scores[:top_n]
 
         return feature_importance
 
@@ -329,7 +336,7 @@ class BaselineEvaluator:
 
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.results = {}
+        self.results: Dict[str, Any] = {}
 
     def evaluate_classifier(
         self,
@@ -341,8 +348,11 @@ class BaselineEvaluator:
         logger.info("Evaluating baseline classifier")
 
         # Predictions
-        y_pred = classifier.model.predict(X_test)
-        y_proba = classifier.model.predict_proba(X_test)
+        if classifier.model is not None:
+            y_pred = classifier.model.predict(X_test)
+            y_proba = classifier.model.predict_proba(X_test)
+        else:
+            raise ValueError("Model not trained yet")
 
         # Metrics
         f1_macro = f1_score(y_test, y_pred, average="macro")
@@ -363,7 +373,7 @@ class BaselineEvaluator:
         results = {
             "f1_macro": f1_macro,
             "f1_weighted": f1_weighted,
-            "f1_per_class": dict(zip(classifier.clause_types, f1_per_class)),
+            "f1_per_class": dict(zip(classifier.clause_types, f1_per_class)) if classifier.clause_types is not None else {},
             "classification_report": class_report,
             "confusion_matrix": conf_matrix.tolist(),
             "feature_importance": feature_importance,
@@ -401,7 +411,7 @@ class BaselineEvaluator:
             risk_distribution[level] = risk_levels.count(level)
 
         # Risk type distribution
-        risk_type_distribution = {}
+        risk_type_distribution: Dict[str, int] = {}
         for score in clause_scores:
             for risk in score["detected_risks"]:
                 risk_type = risk["risk_type"]

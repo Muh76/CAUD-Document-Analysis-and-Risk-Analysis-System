@@ -132,8 +132,7 @@ class AuthManager:
         """
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
-            username: str = payload.get("sub")
-
+            username = payload.get("sub")
             if username is None:
                 return None
 
@@ -142,7 +141,7 @@ class AuthManager:
         except jwt.ExpiredSignatureError:
             self.logger.warning("Token expired")
             return None
-        except jwt.JWTError as e:
+        except jwt.PyJWTError as e:
             self.logger.error(f"JWT error: {e}")
             return None
         except Exception as e:
@@ -164,7 +163,7 @@ class AuthManager:
             if payload is None:
                 return None
 
-            username: str = payload.get("sub")
+            username = payload.get("sub")
             if username is None:
                 return None
 

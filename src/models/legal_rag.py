@@ -305,15 +305,15 @@ class LegalRAGSystem:
             collection_info = self.collection.get()
 
             # Count by clause type
-            clause_types = {}
-            outcomes = {}
+            clause_types: Dict[str, int] = {}
+            outcomes: Dict[str, int] = {}
 
             for metadata in collection_info["metadatas"]:
                 clause_type = metadata["clause_type"]
                 outcome = metadata["outcome"]
 
-                clause_types[clause_type] = clause_types.get(clause_type, 0) + 1
-                outcomes[outcome] = outcomes.get(outcome, 0) + 1
+                clause_types[clause_type] = int(clause_types.get(clause_type, 0)) + 1
+                outcomes[outcome] = int(outcomes.get(outcome, 0)) + 1
 
             return {
                 "total_clauses": len(collection_info["metadatas"]),

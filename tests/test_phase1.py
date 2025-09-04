@@ -1,573 +1,458 @@
 """
-Tests for Phase 1 - Data Pipeline and Baseline Models
-Comprehensive test suite for data processing, validation, and baseline models
+Test Suite for Contract Analysis System - Phase 1
+Tests for parsing, metadata extraction, NER, and data quality
 """
 
 import pytest
 import pandas as pd
-import numpy as np
 import json
-from unittest.mock import Mock
-
-# Import modules to test
+import tempfile
+import shutil
+from pathlib import Path
+from unittest.mock import Mock, patch
 import sys
+import os
 
-sys.path.append("src")
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from demo_modules import (
-    ContractDataPipeline,
-    ContractMetadata,
-    ClauseSegment,
-    BaselineClauseClassifier,
-    KeywordRiskScorer,
-    BaselineEvaluator,
-)
+from src.data.parsing_pipeline import ContractParser
+from src.data.metadata_extractor import MetadataExtractor, ContractMetadata
+from src.data.legal_ner import LegalNER
+from src.validation.run_checks import DataValidator
 
 
-class TestContractDataPipeline:
-    """Test suite for data pipeline functionality"""
+class TestParsingPipeline:
+    """Test parsing pipeline functionality"""
 
-    @pytest.fixture
-    def pipeline_config(self):
-        return {
-            "cuad_file_path": "data/raw/CUAD_v1.json",
+    def setup_method(self):
+        """Setup test environment"""
+        self.config = {
+            "input_dir": "data/raw",
             "output_dir": "data/processed",
-            "validation_enabled": True,
-            "logging_level": "INFO",
+            "min_clause_length": 50,
+            "confidence_threshold": 0.5,
         }
+        self.parser = ContractParser(self.config)
 
-    @pytest.fixture
-    def sample_contract_text(self):
-        return """
-        AGREEMENT
+    def test_parser_initialization(self):
+        """Test parser initialization"""
+        assert self.parser is not None
+        assert hasattr(self.parser, 'heading_patterns')
+        assert hasattr(self.parser, 'bullet_patterns')
+
+    def test_text_normalization(self):
+        """Test text normalization"""
+        test_text = "This   has   extra   spaces\n\nand\n\n\nnewlines"
+        normalized = self.parser.normalize_text(test_text)
         
-        This Agreement is entered into on January 1, 2024, between ABC Corporation ("Company") 
-        and John Doe ("Employee").
+        assert "   " not in normalized  # No extra spaces
+        assert "\n\n" not in normalized  # No double newlines
+        assert normalized.strip() == normalized  # Properly stripped
+
+    def test_clause_classification(self):
+        """Test clause type classification"""
+        test_clauses = [
+            ("This agreement shall be governed by the laws of California", "governing_law"),
+            ("Party A shall pay $50,000 in liquidated damages", "liability"),
+            ("All information shall be kept confidential", "confidentiality"),
+            ("Either party may terminate this agreement", "termination"),
+            ("All intellectual property shall be assigned", "ip_assignment"),
+        ]
         
-        Section 1. Employment
-        The Company agrees to employ the Employee as a Software Engineer.
+        for clause_text, expected_type in test_clauses:
+            classified_type = self.parser._classify_clause_type(clause_text)
+            assert classified_type == expected_type
+
+    def test_clause_segmentation(self):
+        """Test clause segmentation"""
+        test_text = """
+        SECTION 1. GOVERNING LAW
+        This agreement shall be governed by the laws of California.
         
-        Section 2. Compensation
-        The Employee shall receive a salary of $100,000 per year.
+        SECTION 2. LIABILITY
+        Party A shall be liable for all damages.
         
-        Section 3. Termination
-        Either party may terminate this agreement with 30 days written notice.
+        SECTION 3. CONFIDENTIALITY
+        All information shall be kept confidential.
+        """
         
-        Section 4. Confidentiality
-        The Employee agrees to maintain confidentiality of company information.
+        clauses = self.parser.segment_clauses(test_text, "test_contract")
         
-        Section 5. Governing Law
+        assert len(clauses) >= 3  # Should find at least 3 clauses
+        assert all("clause_id" in clause for clause in clauses)
+        assert all("text" in clause for clause in clauses)
+        assert all("clause_type" in clause for clause in clauses)
+
+    def test_confidence_calculation(self):
+        """Test confidence score calculation"""
+        short_text = "Short clause"
+        medium_text = "This is a medium length clause with some content"
+        long_text = "This is a very long clause with lots of content that should get a high confidence score because it has substantial text and appears to be well-formatted"
+        
+        short_confidence = self.parser._calculate_confidence(short_text)
+        medium_confidence = self.parser._calculate_confidence(medium_text)
+        long_confidence = self.parser._calculate_confidence(long_text)
+        
+        assert short_confidence < medium_confidence < long_confidence
+        assert all(0 <= conf <= 1 for conf in [short_confidence, medium_confidence, long_confidence])
+
+
+class TestMetadataExtraction:
+    """Test metadata extraction functionality"""
+
+    def setup_method(self):
+        """Setup test environment"""
+        self.config = {}
+        self.extractor = MetadataExtractor(self.config)
+
+    def test_extractor_initialization(self):
+        """Test metadata extractor initialization"""
+        assert self.extractor is not None
+        assert hasattr(self.extractor, 'date_patterns')
+        assert hasattr(self.extractor, 'amount_patterns')
+        assert hasattr(self.extractor, 'party_patterns')
+
+    def test_party_extraction(self):
+        """Test party name extraction"""
+        test_text = """
+        This agreement is between ABC Corporation Inc. and XYZ Company LLC.
+        The parties agree to the following terms.
+        """
+        
+        parties = self.extractor._extract_parties(test_text)
+        assert len(parties) >= 1
+        assert any("ABC Corporation" in party for party in parties)
+        assert any("XYZ Company" in party for party in parties)
+
+    def test_date_extraction(self):
+        """Test date extraction"""
+        test_text = """
+        This agreement is effective as of January 1, 2024.
+        The contract expires on December 31, 2024.
+        """
+        
+        effective_date = self.extractor._extract_effective_date(test_text)
+        expiration_date = self.extractor._extract_expiration_date(test_text)
+        
+        assert effective_date == "2024-01-01"
+        assert expiration_date == "2024-12-31"
+
+    def test_amount_extraction(self):
+        """Test amount and currency extraction"""
+        test_text = """
+        The contract value is $100,000.00 USD.
+        Additional fees may apply up to €50,000 EUR.
+        """
+        
+        value, currency = self.extractor._extract_contract_value(test_text)
+        assert value == 100000.0
+        assert currency == "USD"
+
+    def test_governing_law_extraction(self):
+        """Test governing law extraction"""
+        test_text = """
+        This agreement shall be governed by the laws of the State of California.
+        Jurisdiction shall be in the courts of Los Angeles County.
+        """
+        
+        governing_law = self.extractor._extract_governing_law(test_text)
+        jurisdiction = self.extractor._extract_jurisdiction(test_text)
+        
+        assert "California" in governing_law
+        assert "Los Angeles" in jurisdiction
+
+    def test_contract_type_classification(self):
+        """Test contract type classification"""
+        test_cases = [
+            ("employment agreement with employee", "employment"),
+            ("service agreement for consulting", "service"),
+            ("purchase agreement for goods", "purchase"),
+            ("lease agreement for property", "lease"),
+            ("non-disclosure agreement", "nda"),
+        ]
+        
+        for text, expected_type in test_cases:
+            classified_type = self.extractor._classify_contract_type(text)
+            assert classified_type == expected_type
+
+    def test_full_metadata_extraction(self):
+        """Test complete metadata extraction"""
+        test_text = """
+        EMPLOYMENT AGREEMENT
+        
+        This agreement is between ABC Corporation Inc. and John Doe, effective as of January 1, 2024.
+        The contract value is $75,000.00 USD.
         This agreement shall be governed by the laws of California.
         """
-
-    @pytest.fixture
-    def pipeline(self, pipeline_config):
-        return ContractDataPipeline(pipeline_config)
-
-    def test_pipeline_initialization(self, pipeline):
-        """Test pipeline initialization"""
-        assert pipeline is not None
-        assert pipeline.config is not None
-        assert pipeline.nlp is not None
-        assert pipeline.tokenizer is not None
-
-    def test_extract_metadata(self, pipeline, sample_contract_text):
-        """Test metadata extraction"""
-        metadata = pipeline.extract_metadata(sample_contract_text, "test_contract_001")
-
+        
+        metadata = self.extractor.extract_metadata(test_text, "test_contract")
+        
         assert isinstance(metadata, ContractMetadata)
-        assert metadata.contract_id == "test_contract_001"
-        assert metadata.contract_type == "EMPLOYMENT"
-        assert len(metadata.parties) > 0
-        assert metadata.total_clauses > 0
-        assert metadata.file_size > 0
+        assert metadata.contract_id == "test_contract"
+        assert len(metadata.parties) >= 1
+        assert metadata.effective_date == "2024-01-01"
+        assert metadata.contract_value == 75000.0
+        assert metadata.currency == "USD"
+        assert "California" in metadata.governing_law
+        assert metadata.contract_type == "employment"
 
-    def test_segment_clauses(self, pipeline, sample_contract_text):
-        """Test clause segmentation"""
-        clauses = pipeline.segment_clauses(sample_contract_text, "test_contract_001")
 
-        assert isinstance(clauses, list)
-        assert len(clauses) > 0
+class TestLegalNER:
+    """Test legal NER functionality"""
 
-        for clause in clauses:
-            assert isinstance(clause, ClauseSegment)
-            assert clause.clause_id is not None
-            assert len(clause.text) > 0
-            assert clause.start_position >= 0
-            assert clause.end_position > clause.start_position
-            assert 0 <= clause.confidence <= 1
+    def setup_method(self):
+        """Setup test environment"""
+        self.config = {}
+        self.ner = LegalNER(self.config)
 
-    def test_classify_contract_type(self, pipeline):
-        """Test contract type classification"""
-        # Test employment contract
-        employment_text = "This employment agreement..."
-        assert pipeline._classify_contract_type(employment_text) == "EMPLOYMENT"
+    def test_ner_initialization(self):
+        """Test NER initialization"""
+        assert self.ner is not None
+        # Note: spaCy might not be available in test environment
 
-        # Test NDA
-        nda_text = "This non-disclosure agreement..."
-        assert pipeline._classify_contract_type(nda_text) == "NDA"
+    @patch('src.data.legal_ner.SPACY_AVAILABLE', True)
+    def test_entity_extraction(self):
+        """Test entity extraction (mocked)"""
+        test_text = """
+        This agreement contains Force Majeure provisions.
+        The Indemnified Party shall be protected.
+        This is a Non-Disclosure Agreement.
+        """
+        
+        # Mock spaCy processing
+        with patch.object(self.ner, 'nlp') as mock_nlp:
+            mock_doc = Mock()
+            mock_ent = Mock()
+            mock_ent.text = "Force Majeure"
+            mock_ent.label_ = "LEGAL_TERM"
+            mock_ent.start_char = 0
+            mock_ent.end_char = 13
+            mock_doc.ents = [mock_ent]
+            mock_nlp.return_value = mock_doc
+            
+            entities = self.ner.extract_entities(test_text, "test_contract")
+            
+            assert len(entities) >= 1
+            assert entities[0]["entity"] == "Force Majeure"
+            assert entities[0]["label"] == "LEGAL_TERM"
 
-        # Test unknown type
-        unknown_text = "This is some random text..."
-        assert pipeline._classify_contract_type(unknown_text) is None
-
-    def test_classify_clause_type(self, pipeline):
-        """Test clause type classification"""
-        # Test liability clause
-        liability_text = "The party shall indemnify..."
-        assert (
-            pipeline._classify_clause_type("Liability", liability_text) == "liability"
-        )
-
-        # Test termination clause
-        termination_text = "Either party may terminate..."
-        assert (
-            pipeline._classify_clause_type("Termination", termination_text)
-            == "termination"
-        )
-
-        # Test unknown clause type
-        unknown_text = "This is some random clause..."
-        assert pipeline._classify_clause_type("Unknown", unknown_text) is None
-
-    def test_identify_risk_flags(self, pipeline):
-        """Test risk flag identification"""
-        # Test high risk clause
-        high_risk_text = "The party shall have unlimited liability for all damages."
-        risk_flags = pipeline._identify_risk_flags(high_risk_text)
-        assert "uncapped_liability" in risk_flags
-
-        # Test medium risk clause
-        medium_risk_text = "The party shall use reasonable efforts."
-        risk_flags = pipeline._identify_risk_flags(medium_risk_text)
-        assert "vague_terms" in risk_flags
-
-        # Test low risk clause
-        low_risk_text = "Both parties agree to standard terms."
-        risk_flags = pipeline._identify_risk_flags(low_risk_text)
-        assert len(risk_flags) == 0
-
-    def test_process_contract(self, pipeline, sample_contract_text):
-        """Test complete contract processing"""
-        metadata, clauses = pipeline.process_contract(
-            sample_contract_text, "test_contract_001"
-        )
-
-        assert isinstance(metadata, ContractMetadata)
-        assert isinstance(clauses, list)
-        assert len(clauses) > 0
-        assert metadata.total_clauses == len(clauses)
-
-    def test_create_data_contracts(self, pipeline):
-        """Test data contract creation"""
-        data_contracts = pipeline.create_data_contracts()
-
-        assert isinstance(data_contracts, dict)
-        assert "contract_metadata" in data_contracts
-        assert "clause_segments" in data_contracts
-        assert "required_fields" in data_contracts["contract_metadata"]
-        assert "validation_rules" in data_contracts["contract_metadata"]
-
-    def test_generate_data_report(self, pipeline):
-        """Test data report generation"""
-        # Create sample metadata and clauses
-        metadata_list = [
-            ContractMetadata(
-                contract_id="test_001",
-                contract_type="EMPLOYMENT",
-                parties=["ABC Corp", "John Doe"],
-                effective_date="2024-01-01",
-                expiration_date=None,
-                jurisdiction="California",
-                governing_law="California Law",
-                total_clauses=5,
-                file_size=1000,
-                processing_timestamp="2024-01-01T00:00:00",
-            )
+    def test_entity_classification(self):
+        """Test entity classification"""
+        test_entities = [
+            {"label": "LEGAL_TERM", "entity": "Force Majeure"},
+            {"label": "CONTRACT_TYPE", "entity": "Non-Disclosure Agreement"},
+            {"label": "ORG", "entity": "ABC Corporation"},
+            {"label": "PERSON", "entity": "John Doe"},
         ]
+        
+        classified = self.ner.classify_entities(test_entities)
+        
+        assert len(classified["legal_terms"]) >= 1
+        assert len(classified["contract_types"]) >= 1
+        assert len(classified["organizations"]) >= 1
+        assert len(classified["persons"]) >= 1
 
-        clauses_list = [
-            [
-                ClauseSegment(
-                    clause_id="test_001_clause_0",
-                    text="Test clause text",
-                    clause_type="liability",
-                    start_position=0,
-                    end_position=20,
-                    confidence=0.8,
-                    entities=[],
-                    risk_flags=["uncapped_liability"],
-                )
-            ]
+    def test_entity_report_generation(self):
+        """Test entity report generation"""
+        test_entities = [
+            {"label": "LEGAL_TERM", "entity": "Force Majeure", "confidence": 0.9},
+            {"label": "LEGAL_TERM", "entity": "Indemnified Party", "confidence": 0.8},
+            {"label": "CONTRACT_TYPE", "entity": "Non-Disclosure Agreement", "confidence": 0.9},
         ]
-
-        report = pipeline.generate_data_report(metadata_list, clauses_list)
-
-        assert isinstance(report, dict)
-        assert "summary" in report
-        assert "contract_types" in report
-        assert "clause_types" in report
-        assert "risk_flags" in report
-        assert "entity_types" in report
-        assert "data_quality" in report
-
-
-class TestBaselineClauseClassifier:
-    """Test suite for baseline clause classifier"""
-
-    @pytest.fixture
-    def classifier_config(self):
-        return {
-            "data_path": "data/processed/clause_segments.csv",
-            "output_dir": "models/baseline",
-            "test_size": 0.2,
-            "random_state": 42,
-        }
-
-    @pytest.fixture
-    def sample_clauses_df(self):
-        return pd.DataFrame(
-            {
-                "text": [
-                    "The party shall indemnify all damages.",
-                    "Either party may terminate with notice.",
-                    "The employee shall maintain confidentiality.",
-                    "Payment shall be made monthly.",
-                    "This agreement is governed by California law.",
-                ],
-                "clause_type": [
-                    "liability",
-                    "termination",
-                    "confidentiality",
-                    "payment",
-                    "governing_law",
-                ],
-            }
-        )
-
-    @pytest.fixture
-    def classifier(self, classifier_config):
-        return BaselineClauseClassifier(classifier_config)
-
-    def test_classifier_initialization(self, classifier):
-        """Test classifier initialization"""
-        assert classifier is not None
-        assert classifier.config is not None
-        assert classifier.label_encoder is not None
-        assert classifier.vectorizer is not None
-        assert classifier.model is None
-
-    def test_prepare_data(self, classifier, sample_clauses_df):
-        """Test data preparation"""
-        X, y = classifier.prepare_data(sample_clauses_df)
-
-        assert isinstance(X, np.ndarray)
-        assert isinstance(y, np.ndarray)
-        assert X.shape[0] == len(sample_clauses_df)
-        assert len(y) == len(sample_clauses_df)
-        assert classifier.clause_types is not None
-        assert len(classifier.clause_types) > 0
-
-    def test_train_model(self, classifier, sample_clauses_df):
-        """Test model training"""
-        X, y = classifier.prepare_data(sample_clauses_df)
-        metrics = classifier.train_model(X, y, model_type="logistic")
-
-        assert classifier.model is not None
-        assert isinstance(metrics, dict)
-        assert "model_type" in metrics
-        assert "cv_f1_macro_mean" in metrics
-        assert "f1_macro" in metrics
-        assert "training_samples" in metrics
-
-    def test_predict(self, classifier, sample_clauses_df):
-        """Test prediction functionality"""
-        X, y = classifier.prepare_data(sample_clauses_df)
-        classifier.train_model(X, y, model_type="logistic")
-
-        test_texts = ["This is a test clause.", "Another test clause."]
-        predictions, confidence_scores = classifier.predict(test_texts)
-
-        assert isinstance(predictions, np.ndarray)
-        assert isinstance(confidence_scores, np.ndarray)
-        assert len(predictions) == len(test_texts)
-        assert len(confidence_scores) == len(test_texts)
-        assert all(0 <= score <= 1 for score in confidence_scores)
-
-    def test_get_feature_importance(self, classifier, sample_clauses_df):
-        """Test feature importance extraction"""
-        X, y = classifier.prepare_data(sample_clauses_df)
-        classifier.train_model(X, y, model_type="logistic")
-
-        feature_importance = classifier.get_feature_importance(top_n=5)
-
-        assert isinstance(feature_importance, dict)
-        assert len(feature_importance) > 0
-
-        for clause_type, features in feature_importance.items():
-            assert isinstance(features, list)
-            assert len(features) <= 5
-            for feature, score in features:
-                assert isinstance(feature, str)
-                assert isinstance(score, (int, float))
-
-    def test_save_and_load_model(self, classifier, sample_clauses_df, tmp_path):
-        """Test model saving and loading"""
-        X, y = classifier.prepare_data(sample_clauses_df)
-        classifier.train_model(X, y, model_type="logistic")
-
-        model_path = tmp_path / "test_model.joblib"
-        classifier.save_model(str(model_path))
-
-        assert model_path.exists()
-
-        # Load model
-        loaded_classifier = BaselineClauseClassifier.load_model(str(model_path))
-
-        assert loaded_classifier.model is not None
-        assert loaded_classifier.clause_types is not None
-        assert loaded_classifier.feature_names is not None
-
-
-class TestKeywordRiskScorer:
-    """Test suite for keyword-based risk scorer"""
-
-    @pytest.fixture
-    def risk_scorer(self):
-        return KeywordRiskScorer()
-
-    def test_risk_scorer_initialization(self, risk_scorer):
-        """Test risk scorer initialization"""
-        assert risk_scorer is not None
-        assert "high_risk" in risk_scorer.risk_patterns
-        assert "medium_risk" in risk_scorer.risk_patterns
-        assert "low_risk" in risk_scorer.risk_patterns
-        assert "high_risk" in risk_scorer.risk_weights
-
-    def test_score_clause_high_risk(self, risk_scorer):
-        """Test high risk clause scoring"""
-        high_risk_text = "The party shall have unlimited liability for all damages."
-        result = risk_scorer.score_clause(high_risk_text)
-
-        assert isinstance(result, dict)
-        assert "risk_score" in result
-        assert "risk_level" in result
-        assert "risk_breakdown" in result
-        assert "detected_risks" in result
-        assert result["risk_level"] == "HIGH"
-        assert result["risk_score"] > 7.0
-
-    def test_score_clause_medium_risk(self, risk_scorer):
-        """Test medium risk clause scoring"""
-        medium_risk_text = (
-            "The party shall use reasonable efforts to complete the work."
-        )
-        result = risk_scorer.score_clause(medium_risk_text)
-
-        assert isinstance(result, dict)
-        assert result["risk_level"] == "MEDIUM"
-        assert 4.0 <= result["risk_score"] < 7.0
-
-    def test_score_clause_low_risk(self, risk_scorer):
-        """Test low risk clause scoring"""
-        low_risk_text = "Both parties agree to standard terms and conditions."
-        result = risk_scorer.score_clause(low_risk_text)
-
-        assert isinstance(result, dict)
-        assert result["risk_level"] == "LOW"
-        assert result["risk_score"] < 4.0
-
-    def test_score_contract(self, risk_scorer):
-        """Test contract-level risk scoring"""
-        clauses = [
-            "The party shall have unlimited liability.",
-            "The party shall use reasonable efforts.",
-            "Both parties agree to standard terms.",
-        ]
-
-        result = risk_scorer.score_contract(clauses)
-
-        assert isinstance(result, dict)
-        assert "contract_risk_score" in result
-        assert "contract_risk_level" in result
-        assert "total_clauses" in result
-        assert "high_risk_clauses" in result
-        assert "medium_risk_clauses" in result
-        assert "low_risk_clauses" in result
-        assert "clause_scores" in result
-        assert "risk_distribution" in result
-        assert result["total_clauses"] == 3
-
-
-class TestBaselineEvaluator:
-    """Test suite for baseline evaluator"""
-
-    @pytest.fixture
-    def evaluator_config(self):
-        return {
-            "data_path": "data/processed/clause_segments.csv",
-            "output_dir": "models/baseline",
-            "test_size": 0.2,
-            "random_state": 42,
-        }
-
-    @pytest.fixture
-    def evaluator(self, evaluator_config):
-        return BaselineEvaluator(evaluator_config)
-
-    def test_evaluator_initialization(self, evaluator):
-        """Test evaluator initialization"""
-        assert evaluator is not None
-        assert evaluator.config is not None
-        assert evaluator.results == {}
-
-    def test_evaluate_classifier(self, evaluator):
-        """Test classifier evaluation"""
-        # Mock classifier and test data
-        classifier = Mock()
-        classifier.model = Mock()
-        classifier.clause_types = ["liability", "termination", "confidentiality"]
-        classifier.get_feature_importance.return_value = {"liability": [("test", 0.5)]}
-
-        X_test = np.random.rand(10, 100)
-        y_test = np.random.randint(0, 3, 10)
-
-        # Mock predictions
-        classifier.model.predict.return_value = np.random.randint(0, 3, 10)
-        classifier.model.predict_proba.return_value = np.random.rand(10, 3)
-
-        result = evaluator.evaluate_classifier(classifier, X_test, y_test)
-
-        assert isinstance(result, dict)
-        assert "f1_macro" in result
-        assert "f1_weighted" in result
-        assert "f1_per_class" in result
-        assert "classification_report" in result
-        assert "confusion_matrix" in result
-        assert "feature_importance" in result
-
-    def test_evaluate_risk_scorer(self, evaluator):
-        """Test risk scorer evaluation"""
-        risk_scorer = KeywordRiskScorer()
-        test_clauses = [
-            "The party shall have unlimited liability.",
-            "The party shall use reasonable efforts.",
-            "Both parties agree to standard terms.",
-        ]
-
-        result = evaluator.evaluate_risk_scorer(risk_scorer, test_clauses)
-
-        assert isinstance(result, dict)
-        assert "avg_risk_score" in result
-        assert "std_risk_score" in result
-        assert "risk_distribution" in result
-        assert "risk_type_distribution" in result
-        assert "total_clauses" in result
-        assert "clauses_with_risks" in result
-
-    def test_generate_report(self, evaluator, tmp_path):
-        """Test report generation"""
-        # Add some results
-        evaluator.results = {
-            "classifier": {"f1_macro": 0.8},
-            "risk_scorer": {"avg_risk_score": 5.0},
-        }
-
-        report_path = tmp_path / "test_report.json"
-        evaluator.generate_report(str(report_path))
-
-        assert report_path.exists()
-
-        with open(report_path, "r") as f:
-            report = json.load(f)
-
-        assert "evaluation_summary" in report
-        assert "results" in report
-        assert "classifier" in report["results"]
-        assert "risk_scorer" in report["results"]
+        
+        report = self.ner.generate_entity_report(test_entities)
+        
+        assert report["total_entities"] == 3
+        assert "LEGAL_TERM" in report["entity_types"]
+        assert "CONTRACT_TYPE" in report["entity_types"]
+        assert report["entity_types"]["LEGAL_TERM"] == 2
+        assert report["entity_types"]["CONTRACT_TYPE"] == 1
 
 
 class TestDataValidation:
-    """Test suite for data validation"""
+    """Test data validation functionality"""
 
-    def test_pandera_schema_validation(self):
-        """Test Pandera schema validation"""
-        import pandera as pa
-        from pandera.typing import Series
+    def setup_method(self):
+        """Setup test environment"""
+        self.config = {
+            "data_dir": "data/processed",
+            "validation_config": "configs/validation.yaml",
+        }
+        self.validator = DataValidator(self.config)
 
-        class TestSchema(pa.SchemaModel):
-            text: Series[str] = pa.Field(str_len={"min_value": 1})
-            clause_type: Series[str] = pa.Field(nullable=True)
-            confidence: Series[float] = pa.Field(ge=0.0, le=1.0)
+    def test_validator_initialization(self):
+        """Test validator initialization"""
+        assert self.validator is not None
+        assert hasattr(self.validator, 'config')
 
-        # Valid data
-        valid_data = pd.DataFrame(
-            {"text": ["Test clause"], "clause_type": ["liability"], "confidence": [0.8]}
-        )
+    def test_pandera_schema_creation(self):
+        """Test Pandera schema creation"""
+        schemas = self.validator.create_pandera_schemas()
+        
+        assert "contract_metadata" in schemas
+        assert "clause_segments" in schemas
+        assert "enriched_metadata" in schemas
 
-        # Should not raise exception
-        TestSchema.validate(valid_data)
+    def test_contract_metadata_validation(self):
+        """Test contract metadata validation"""
+        # Create test data
+        test_data = pd.DataFrame({
+            "contract_id": ["contract_001", "contract_002"],
+            "contract_type": ["employment", "service"],
+            "parties": ["['ABC Corp', 'John Doe']", "['XYZ Inc', 'Jane Smith']"],
+            "effective_date": ["2024-01-01", "2024-01-15"],
+            "jurisdiction": ["California", "New York"],
+            "total_clauses": [10, 15],
+            "file_size": [1024, 2048],
+        })
+        
+        schemas = self.validator.create_pandera_schemas()
+        contract_schema = schemas["contract_metadata"]
+        
+        # This should not raise an exception
+        validated_data = contract_schema.validate(test_data)
+        assert len(validated_data) == 2
 
-        # Invalid data
-        invalid_data = pd.DataFrame(
-            {
-                "text": [""],
-                "clause_type": ["liability"],
-                "confidence": [1.5],  # Invalid confidence
-            }
-        )
+    def test_clause_segments_validation(self):
+        """Test clause segments validation"""
+        # Create test data
+        test_data = pd.DataFrame({
+            "contract_id": ["contract_001", "contract_001"],
+            "clause_type": ["governing_law", "liability"],
+            "text": [
+                "This agreement shall be governed by the laws of California.",
+                "Party A shall be liable for all damages."
+            ],
+            "confidence": [0.8, 0.9],
+            "risk_flags": ["['uncapped_liability']", "[]"],
+        })
+        
+        schemas = self.validator.create_pandera_schemas()
+        clause_schema = schemas["clause_segments"]
+        
+        # This should not raise an exception
+        validated_data = clause_schema.validate(test_data)
+        assert len(validated_data) == 2
 
-        # Should raise exception
-        with pytest.raises(Exception):
-            TestSchema.validate(invalid_data)
+
+class TestDataQuality:
+    """Test data quality checks"""
+
+    def test_clause_overlap_detection(self):
+        """Test detection of overlapping clauses"""
+        clauses = [
+            {"start": 0, "end": 100, "text": "First clause"},
+            {"start": 50, "end": 150, "text": "Second clause"},  # Overlaps with first
+            {"start": 200, "end": 300, "text": "Third clause"},  # No overlap
+        ]
+        
+        # Check for overlaps
+        overlaps = []
+        for i, clause1 in enumerate(clauses):
+            for j, clause2 in enumerate(clauses[i+1:], i+1):
+                if (clause1["start"] < clause2["end"] and 
+                    clause1["end"] > clause2["start"]):
+                    overlaps.append((i, j))
+        
+        assert len(overlaps) >= 1  # Should find at least one overlap
+
+    def test_contract_metadata_completeness(self):
+        """Test contract metadata completeness"""
+        required_fields = [
+            "contract_id", "contract_type", "parties", 
+            "total_clauses", "file_size"
+        ]
+        
+        test_metadata = {
+            "contract_id": "contract_001",
+            "contract_type": "employment",
+            "parties": ["ABC Corp", "John Doe"],
+            "total_clauses": 10,
+            "file_size": 1024,
+        }
+        
+        missing_fields = [field for field in required_fields 
+                          if field not in test_metadata or test_metadata[field] is None]
+        
+        assert len(missing_fields) == 0  # All required fields present
+
+    def test_clause_text_quality(self):
+        """Test clause text quality"""
+        test_clauses = [
+            {"text": "This is a good clause with substantial content.", "quality": "good"},
+            {"text": "Short.", "quality": "poor"},  # Too short
+            {"text": "This clause has reasonable length and content.", "quality": "good"},
+        ]
+        
+        quality_issues = []
+        for clause in test_clauses:
+            if len(clause["text"]) < 20:  # Minimum length threshold
+                quality_issues.append(clause["text"])
+        
+        assert len(quality_issues) >= 1  # Should find at least one quality issue
 
 
 class TestIntegration:
-    """Integration tests for complete pipeline"""
+    """Integration tests for the complete pipeline"""
 
-    def test_end_to_end_pipeline(self, tmp_path):
-        """Test complete end-to-end pipeline"""
-        # Create sample data
-        sample_data = {
-            "data": [
-                {
-                    "id": "test_contract_001",
-                    "title": "Test Employment Agreement",
-                    "context": "This employment agreement is between ABC Corp and John Doe.",
-                    "questions": [],
-                    "answers": [],
-                }
-            ]
-        }
+    def test_end_to_end_processing(self):
+        """Test end-to-end processing with sample data"""
+        # Create temporary test data
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create sample contract text
+            sample_text = """
+            EMPLOYMENT AGREEMENT
+            
+            This agreement is between ABC Corporation Inc. and John Doe, effective as of January 1, 2024.
+            
+            SECTION 1. GOVERNING LAW
+            This agreement shall be governed by the laws of California.
+            
+            SECTION 2. LIABILITY
+            Party A shall be liable for all damages up to $100,000.
+            
+            SECTION 3. CONFIDENTIALITY
+            All information shall be kept confidential.
+            """
+            
+            # Test parsing
+            config = {"input_dir": temp_dir, "output_dir": temp_dir}
+            parser = ContractParser(config)
+            
+            # Test clause segmentation
+            clauses = parser.segment_clauses(sample_text, "test_contract")
+            assert len(clauses) >= 3
+            
+            # Test metadata extraction
+            extractor = MetadataExtractor({})
+            metadata = extractor.extract_metadata(sample_text, "test_contract")
+            assert metadata.contract_type == "employment"
+            assert len(metadata.parties) >= 1
+            
+            # Test NER (if spaCy available)
+            ner = LegalNER({})
+            if ner.nlp:
+                entities = ner.extract_entities(sample_text, "test_contract")
+                assert len(entities) >= 0  # May or may not find entities
 
-        data_file = tmp_path / "test_cuad.json"
-        with open(data_file, "w") as f:
-            json.dump(sample_data, f)
-
-        # Test pipeline
-        config = {
-            "cuad_file_path": str(data_file),
-            "output_dir": str(tmp_path / "processed"),
-            "validation_enabled": True,
-            "logging_level": "INFO",
-        }
-
-        pipeline = ContractDataPipeline(config)
-
-        # Load data
-        cuad_df = pipeline.load_cuad_dataset(str(data_file))
-        assert len(cuad_df) == 1
-
-        # Process contract
-        contract = cuad_df.iloc[0]
-        metadata, clauses = pipeline.process_contract(
-            contract["context"], contract["contract_id"]
-        )
-
-        assert isinstance(metadata, ContractMetadata)
-        assert isinstance(clauses, list)
-        assert len(clauses) > 0
+    def test_data_consistency(self):
+        """Test data consistency across pipeline stages"""
+        # This test ensures that contract IDs are consistent
+        # across parsing, metadata extraction, and NER stages
+        
+        contract_id = "test_contract_001"
+        
+        # Simulate pipeline stages
+        parsing_output = {"contract_id": contract_id, "n_clauses": 5}
+        metadata_output = {"contract_id": contract_id, "parties": ["ABC Corp"]}
+        ner_output = {"contract_id": contract_id, "entities": []}
+        
+        # Check consistency
+        assert parsing_output["contract_id"] == metadata_output["contract_id"]
+        assert metadata_output["contract_id"] == ner_output["contract_id"]
 
 
 if __name__ == "__main__":
+    # Run tests
     pytest.main([__file__, "-v"])

@@ -1,0 +1,4 @@
+contract_id,file_name,contract_type,parties,effective_date,jurisdiction,total_clauses,file_size,parsed_ok
+contract_001,sample_contract_001.pdf,employment,"['ABC Corp', 'John Doe']",2024-01-01,California,15,1024,1
+contract_002,sample_contract_002.pdf,service,"['XYZ Inc', 'Jane Smith']",2024-01-15,New York,12,2048,1
+contract_003,sample_contract_003.pdf,nda,"['Tech Corp', 'Consultant LLC']",2024-02-01,Delaware,8,512,1

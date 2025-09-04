@@ -96,7 +96,7 @@ class ContractDataPipeline:
                 data = json.load(f)
 
             # Extract data from CUAD format
-            contracts = []
+            contracts: List[Dict[str, Any]] = []
             for item in data["data"]:
                 contract = {
                     "contract_id": item.get("id", f"contract_{len(contracts)}"),
@@ -216,7 +216,7 @@ class ContractDataPipeline:
         """Segment contract into individual clauses"""
         logger.info(f"Segmenting clauses for contract {contract_id}")
 
-        clauses = []
+        clauses: List[Dict[str, Any]] = []
 
         # Pattern-based clause segmentation
         clause_patterns = [
@@ -403,27 +403,27 @@ class ContractDataPipeline:
         total_clauses = sum(len(clauses) for clauses in clauses_list)
 
         # Contract type distribution
-        contract_types = {}
+        contract_types: Dict[str, int] = {}
         for metadata in metadata_list:
             contract_type = metadata.contract_type or "Unknown"
             contract_types[contract_type] = contract_types.get(contract_type, 0) + 1
 
         # Clause type distribution
-        clause_types = {}
+        clause_types: Dict[str, int] = {}
         for clauses in clauses_list:
             for clause in clauses:
                 clause_type = clause.clause_type or "Unknown"
                 clause_types[clause_type] = clause_types.get(clause_type, 0) + 1
 
         # Risk flag distribution
-        risk_flags = {}
+        risk_flags: Dict[str, int] = {}
         for clauses in clauses_list:
             for clause in clauses:
                 for flag in clause.risk_flags:
                     risk_flags[flag] = risk_flags.get(flag, 0) + 1
 
         # Entity distribution
-        entity_types = {}
+        entity_types: Dict[str, int] = {}
         for clauses in clauses_list:
             for clause in clauses:
                 for entity in clause.entities:

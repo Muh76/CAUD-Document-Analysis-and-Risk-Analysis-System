@@ -1,5 +1,16 @@
 {
-  "pandera": {
+  "enterprise_pandera": {
+    "contracts": {
+      "passed": true,
+      "errors": []
+    },
+    "clauses": {
+      "passed": true,
+      "errors": []
+    },
+    "overall_passed": true
+  },
+  "simple_pandera": {
     "contract_metadata": {
       "passed": true,
       "error": null

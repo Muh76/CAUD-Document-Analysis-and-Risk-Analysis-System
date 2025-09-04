@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-09-04T09:24:10.037602",
+  "validation_summary": {
+    "contracts": {
+      "status": "skipped",
+      "reason": "no_context_or_data"
+    },
+    "clauses": {
+      "status": "skipped",
+      "reason": "no_context_or_data"
+    }
+  },
+  "quality_metrics": {},
+  "recommendations": []
+}

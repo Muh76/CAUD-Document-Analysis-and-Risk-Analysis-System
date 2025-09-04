@@ -6,6 +6,7 @@ import numpy as np
 from typing import Dict, List, Optional
 import logging
 from collections import defaultdict
+from collections import defaultdict
 
 from src.config.config import RISK_WEIGHTS
 
@@ -24,7 +25,7 @@ class RiskScorer:
         }
 
         # Risk distribution tracking
-        self.risk_distribution = defaultdict(int)
+        self.risk_distribution: Dict[str, int] = defaultdict(int)
 
     def calculate_risk_score(self, extracted_clauses: Dict[str, str]) -> float:
         """
@@ -203,7 +204,7 @@ class RiskScorer:
 
         # Sort by business impact
         prioritized.sort(
-            key=lambda x: x["business_impact"]["total_impact_usd"], reverse=True
+            key=lambda x: float(x["business_impact"]["total_impact_usd"]), reverse=True
         )
 
         return prioritized

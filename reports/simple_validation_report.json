@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-09-04T09:46:34.555711",
+  "validation_results": {
+    "contracts": {
+      "total_records": 3,
+      "unique_contract_ids": 3,
+      "null_contract_ids": "0",
+      "valid_parsed_ok": "3",
+      "clause_count_range": "3"
+    },
+    "clauses": {
+      "total_records": 4,
+      "unique_clause_ids": 4,
+      "null_clause_ids": "0",
+      "text_length_range": "4",
+      "confidence_range": "4"
+    }
+  },
+  "success_rates": {
+    "contracts": 100.0,
+    "clauses": 100.0,
+    "overall": 100.0
+  },
+  "recommendations": []
+}

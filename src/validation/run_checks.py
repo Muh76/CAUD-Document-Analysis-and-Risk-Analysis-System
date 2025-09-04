@@ -9,9 +9,10 @@ import numpy as np
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 import pandera as pa
 from pandera import DataFrameSchema, Column, Check
+from .enterprise_pandera import EnterpriseDataValidator
 
 # Try to import Great Expectations, but handle gracefully if not available
 try:
@@ -35,6 +36,7 @@ class DataValidator:
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.logger = logging.getLogger(__name__)
+        self.enterprise_validator = EnterpriseDataValidator()
         self.setup_great_expectations()
 
     def setup_great_expectations(self):
@@ -126,7 +128,7 @@ class DataValidator:
             "enriched_metadata": enriched_metadata_schema,
         }
 
-    def validate_with_pandera(self, data_dir: str) -> Dict[str, Any]:
+    def validate_with_pandera(self, data_dir: str) -> Dict[str, Dict[str, Union[bool, str, None]]]:
         """Validate data using Pandera schemas"""
         self.logger.info("Starting Pandera validation...")
 
@@ -316,7 +318,10 @@ class DataValidator:
         """Run comprehensive data validation"""
         self.logger.info(f"Starting comprehensive validation for {data_dir}")
 
-        # Pandera validation
+        # Enterprise Pandera validation
+        enterprise_results = self.enterprise_validator.run_enterprise_validation(data_dir)
+
+        # Simple Pandera validation as fallback
         pandera_results = self.validate_with_pandera(data_dir)
 
         # Great Expectations validation
@@ -324,12 +329,16 @@ class DataValidator:
 
         # Combine results
         all_results = {
-            "pandera": pandera_results,
+            "enterprise_pandera": enterprise_results,
+            "simple_pandera": pandera_results,
             "great_expectations": ge_results,
-            "overall_passed": all(
-                result.get("passed", False)
-                for result in pandera_results.values()
-                if isinstance(result, dict) and "passed" in result
+            "overall_passed": (
+                enterprise_results.get("overall_passed", False) and
+                all(
+                    result.get("passed", False)
+                    for result in pandera_results.values()
+                    if isinstance(result, dict) and "passed" in result
+                )
             ),
         }
 
@@ -403,74 +412,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    def create_pandera_schemas(self) -> Dict[str, DataFrameSchema]:
-        """Create Pandera schemas for data validation"""
-
-        # Contract metadata schema
-        contract_metadata_schema = DataFrameSchema(
-            {
-                "contract_id": Column(str, nullable=False, unique=True),
-                "contract_type": Column(str, nullable=False),
-                "parties": Column(object, nullable=False),  # List of parties
-                "effective_date": Column(str, nullable=True),
-                "jurisdiction": Column(str, nullable=True),
-                "total_clauses": Column(int, Check.greater_than(0), nullable=False),
-                "file_size": Column(int, Check.greater_than(0), nullable=False),
-                "processing_date": Column(str, nullable=False),
-            }
-        )
-
-        # Clause segments schema
-        clause_segments_schema = DataFrameSchema(
-            {
-                "contract_id": Column(str, nullable=False),
-                "clause_id": Column(str, nullable=False),
-                "clause_type": Column(str, nullable=False),
-                "text": Column(
-                    str, Check.str_length(min_value=50, max_value=5000), nullable=False
-                ),
-                "confidence": Column(float, Check.in_range(0.0, 1.0), nullable=False),
-                "start_pos": Column(
-                    int, Check.greater_than_or_equal_to(0), nullable=False
-                ),
-                "end_pos": Column(int, Check.greater_than(0), nullable=False),
-                "risk_flags": Column(object, nullable=True),  # List of risk flags
-                "entities": Column(object, nullable=True),  # List of entities
-            }
-        )
-
-        # Enriched metadata schema
-        enriched_metadata_schema = DataFrameSchema(
-            {
-                "contract_id": Column(str, nullable=False, unique=True),
-                "contract_type": Column(str, nullable=False),
-                "parties": Column(object, nullable=False),
-                "effective_date": Column(str, nullable=True),
-                "jurisdiction": Column(str, nullable=True),
-                "governing_law": Column(str, nullable=True),
-                "total_clauses": Column(int, Check.greater_than(0), nullable=False),
-                "high_risk_clauses": Column(
-                    int, Check.greater_than_or_equal_to(0), nullable=False
-                ),
-                "medium_risk_clauses": Column(
-                    int, Check.greater_than_or_equal_to(0), nullable=False
-                ),
-                "low_risk_clauses": Column(
-                    int, Check.greater_than_or_equal_to(0), nullable=False
-                ),
-                "total_entities": Column(
-                    int, Check.greater_than_or_equal_to(0), nullable=False
-                ),
-                "processing_date": Column(str, nullable=False),
-            }
-        )
-
-        return {
-            "contract_metadata": contract_metadata_schema,
-            "clause_segments": clause_segments_schema,
-            "enriched_metadata": enriched_metadata_schema,
-        }
 
     def validate_with_pandera(self, data_dir: str) -> Dict[str, Any]:
         """Validate data using Pandera schemas"""
