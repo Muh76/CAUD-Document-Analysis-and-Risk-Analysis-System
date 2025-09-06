@@ -99,5 +99,5 @@ Composite Risk = 0.5 × Rule Score + 0.3 × Model Score + 0.2 × Anomaly Score
 ---
 
 **Model Card Version**: 1.0
-**Last Updated**: 2025-09-06 10:51:35
+**Last Updated**: 2025-09-06 16:54:04
 **Status**: Production Ready ✅

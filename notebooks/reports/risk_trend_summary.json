@@ -1,7 +1,7 @@
 {
   "total_contracts_analyzed": 77,
   "analysis_period": "1 year",
-  "avg_risk_score": 0.2170505729588595,
+  "avg_risk_score": 0.2163641522457073,
   "high_risk_contracts": 0,
   "risk_distribution": {
     "low_risk": 61,
