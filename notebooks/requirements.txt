@@ -1,0 +1,46 @@
+# Contract Analysis & Risk Scoring System - Requirements
+# Generated for Phase 2 Production Deployment
+
+# Core ML Libraries
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.4.2
+scipy==1.11.4
+
+# Deep Learning
+torch==2.1.2
+transformers==4.36.2
+tokenizers==0.15.0
+
+# Visualization
+matplotlib==3.8.4
+seaborn==0.13.0
+plotly==5.17.0
+
+# MLOps
+mlflow==2.8.1
+dvc==3.27.0
+
+# Data Validation
+pandera==0.17.2
+great-expectations==0.18.5
+
+# Utilities
+tqdm==4.66.1
+requests==2.31.0
+python-dotenv==1.0.0
+
+# Development
+jupyter==1.0.0
+notebook==7.0.6
+ipykernel==6.29.0
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Production
+gunicorn==21.2.0
+flask==3.0.0
+fastapi==0.104.1
+uvicorn==0.24.0
