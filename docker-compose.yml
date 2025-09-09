@@ -1,80 +1,58 @@
 version: '3.8'
 
 services:
-  # FastAPI Backend
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/legalai
-      - REDIS_URL=redis://redis:6379
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-    depends_on:
-      - db
-      - redis
-      - mlflow
+      - ENVIRONMENT=production
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - LOG_LEVEL=INFO
+      - PROMETHEUS_ENABLED=true
     volumes:
-      - ./data:/app/data
-      - ./models:/app/models
+      - ./app/var:/app/app/var
+      - ./artifacts:/app/artifacts
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     restart: unless-stopped
 
-  # PostgreSQL Database
-  db:
-    image: postgres:13
-    environment:
-      - POSTGRES_DB=legalai
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  # Redis Cache
-  redis:
-    image: redis:6-alpine
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
-
-  # MLflow Tracking
-  mlflow:
-    image: python:3.9-slim
-    command: >
-      sh -c "pip install mlflow psycopg2-binary &&
-             mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://user:password@db:5432/legalai"
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    restart: unless-stopped
-
-  # Streamlit Frontend
-  frontend:
-    build: .
-    command: streamlit run src/frontend/dashboard.py --server.port 8501 --server.address 0.0.0.0
+  ui:
+    build:
+      context: .
+      dockerfile: docker/ui.Dockerfile
     ports:
       - "8501:8501"
     environment:
-      - API_URL=http://api:8000
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./app/var:/app/app/var
+      - ./artifacts:/app/artifacts
     depends_on:
       - api
-    volumes:
-      - ./data:/app/data
     restart: unless-stopped
 
-  # Prometheus Monitoring
   prometheus:
     image: prom/prometheus:latest
     ports:
       - "9090:9090"
     volumes:
-      - ./mlops/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
     restart: unless-stopped
 
-  # Grafana Dashboard
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -82,9 +60,10 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - grafana_data:/var/lib/grafana
+      - grafana-storage:/var/lib/grafana
+      - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources
     restart: unless-stopped
 
 volumes:
-  postgres_data:
-  grafana_data:
+  grafana-storage:

@@ -1,0 +1,42 @@
+# Staging Environment Configuration
+ENVIRONMENT=staging
+DEBUG=true
+LOG_LEVEL=DEBUG
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+API_TOKEN=staging-token
+
+# Database & Storage
+DATABASE_URL=sqlite:///app/var/staging.db
+REDIS_URL=redis://localhost:6379/1
+
+# Model Configuration
+MODEL_SNAPSHOT=snapshot_20250909
+ARTIFACTS_DIR=artifacts
+
+# RAG Configuration
+RAG_COLLECTION=cuad-safe-clauses-staging
+RAG_INDEX_DIR=app/var/indices/staging
+RAG_TOP_K=3
+RAG_SIMILARITY_THRESHOLD=0.6
+
+# Security
+CORS_ORIGINS=["http://localhost:8501", "https://staging.your-domain.com"]
+RATE_LIMIT_REQUESTS=50
+MAX_FILE_SIZE_MB=5
+
+# Monitoring
+PROMETHEUS_ENABLED=true
+PROMETHEUS_PORT=9090
+OPENTELEMETRY_ENABLED=false
+
+# Cloud Deployment
+GCP_PROJECT_ID=your-staging-project
+GCP_REGION=us-central1
+GCP_SERVICE_NAME=contract-analysis-api-staging
+
+AZURE_RESOURCE_GROUP=contract-analysis-staging-rg
+AZURE_LOCATION=East US
+AZURE_CONTAINER_APP_NAME=contract-analysis-staging

@@ -1,0 +1,43 @@
+# Production Environment Configuration
+ENVIRONMENT=production
+DEBUG=false
+LOG_LEVEL=INFO
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+API_TOKEN=production-token-change-this
+
+# Database & Storage
+DATABASE_URL=postgresql://user:password@db-host:5432/contract_analysis
+REDIS_URL=redis://redis-host:6379/0
+
+# Model Configuration
+MODEL_SNAPSHOT=snapshot_20250909
+ARTIFACTS_DIR=artifacts
+
+# RAG Configuration
+RAG_COLLECTION=cuad-safe-clauses
+RAG_INDEX_DIR=app/var/indices/production
+RAG_TOP_K=5
+RAG_SIMILARITY_THRESHOLD=0.7
+
+# Security
+CORS_ORIGINS=["https://your-domain.com", "https://app.your-domain.com"]
+RATE_LIMIT_REQUESTS=100
+MAX_FILE_SIZE_MB=10
+
+# Monitoring
+PROMETHEUS_ENABLED=true
+PROMETHEUS_PORT=9090
+OPENTELEMETRY_ENABLED=true
+JAEGER_ENDPOINT=https://jaeger.your-domain.com
+
+# Cloud Deployment
+GCP_PROJECT_ID=your-production-project
+GCP_REGION=us-central1
+GCP_SERVICE_NAME=contract-analysis-api
+
+AZURE_RESOURCE_GROUP=contract-analysis-production-rg
+AZURE_LOCATION=East US
+AZURE_CONTAINER_APP_NAME=contract-analysis-production

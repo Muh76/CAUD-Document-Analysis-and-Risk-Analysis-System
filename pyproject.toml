@@ -1,0 +1,134 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contract-analysis-system"
+version = "1.0.0"
+description = "AI-powered contract review and risk analysis system"
+authors = [
+    {name = "Contract Analysis Team", email = "team@contract-analysis.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Office/Business :: Legal",
+]
+
+dependencies = [
+    "fastapi>=0.95.2,<0.100.0",
+    "uvicorn[standard]==0.23.2",
+    "pydantic>=1.9,<2.0",
+    "pydantic-settings>=2.0.0",
+    "streamlit==1.25.0",
+    "numpy==1.24.3",
+    "pandas==2.0.3",
+    "scikit-learn==1.3.0",
+    "torch==2.0.1",
+    "transformers==4.31.0",
+    "sentence-transformers==2.2.2",
+    "chromadb==0.4.6",
+    "PyMuPDF==1.23.5",
+    "pdfplumber==0.9.0",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "python-multipart==0.0.6",
+    "structlog==23.1.0",
+    "prometheus-client==0.17.1",
+    "prometheus-fastapi-instrumentator==6.1.0",
+    "opentelemetry-instrumentation-fastapi==0.41b0",
+    "opentelemetry-instrumentation-requests==0.41b0",
+    "python-dotenv==1.0.0",
+    "httpx==0.24.1",
+    "pytest==7.4.0",
+    "pytest-cov==4.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit==1.7.5",
+    "safety==2.3.4",
+    "flake8==6.0.0",
+    "black==23.7.0",
+    "mypy==1.5.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System"
+Documentation = "https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System#readme"
+Repository = "https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System"
+Issues = "https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System/issues"
+
+[project.scripts]
+contract-api = "app.api.main:main"
+contract-ui = "app.ui.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["artifacts/**/*", "config/*.yaml", "config/*.json"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "app/tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Slow tests",
+]

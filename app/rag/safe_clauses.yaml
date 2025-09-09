@@ -1,0 +1,62 @@
+# Safe Clause Exemplars for RAG System
+# These are curated examples of well-written contract clauses
+
+- label: "Cap on Liability"
+  text: "Liability of either party shall not exceed the total amount paid by the other party under this Agreement in the twelve (12) months preceding the claim, except for liability arising from gross negligence, willful misconduct, or intellectual property infringement."
+  notes: "Includes carve-outs for gross negligence, willful misconduct, and IP infringement"
+  risk_level: "low"
+  category: "liability"
+
+- label: "Termination for Convenience"
+  text: "Either party may terminate this Agreement upon thirty (30) days written notice to the other party. Upon termination, each party shall return all confidential information and cease using the other party's intellectual property."
+  notes: "Provides reasonable notice period and clear post-termination obligations"
+  risk_level: "low"
+  category: "termination"
+
+- label: "Governing Law"
+  text: "This Agreement shall be governed by and construed in accordance with the laws of the State of [State], without regard to its conflict of law principles. Any disputes arising under this Agreement shall be resolved in the courts of [State]."
+  notes: "Clear jurisdiction and dispute resolution mechanism"
+  risk_level: "low"
+  category: "legal"
+
+- label: "Confidentiality"
+  text: "Each party agrees to maintain the confidentiality of all proprietary information disclosed by the other party and to use such information solely for the purpose of performing its obligations under this Agreement. Confidential information shall not include information that is publicly available or independently developed."
+  notes: "Comprehensive confidentiality protection with reasonable exceptions"
+  risk_level: "low"
+  category: "confidentiality"
+
+- label: "Intellectual Property"
+  text: "Each party retains ownership of its pre-existing intellectual property. Any new intellectual property created jointly shall be owned jointly, and any new intellectual property created solely by one party shall be owned by that party."
+  notes: "Clear IP ownership rules for different creation scenarios"
+  risk_level: "low"
+  category: "intellectual_property"
+
+- label: "Payment Terms"
+  text: "Payment shall be due within thirty (30) days of receipt of invoice. Late payments shall incur interest at the rate of 1.5% per month or the maximum rate permitted by law, whichever is lower."
+  notes: "Reasonable payment terms with fair late payment provisions"
+  risk_level: "low"
+  category: "payment"
+
+- label: "Warranty"
+  text: "Each party warrants that it has the authority to enter into this Agreement and that its performance will not violate any applicable laws or third-party rights. This warranty shall survive termination of this Agreement."
+  notes: "Standard authority and compliance warranties"
+  risk_level: "low"
+  category: "warranty"
+
+- label: "Force Majeure"
+  text: "Neither party shall be liable for any failure or delay in performance due to circumstances beyond its reasonable control, including but not limited to acts of God, natural disasters, war, terrorism, or government actions."
+  notes: "Comprehensive force majeure protection"
+  risk_level: "low"
+  category: "force_majeure"
+
+- label: "Indemnification"
+  text: "Each party shall indemnify and hold harmless the other party from any claims, damages, or expenses arising from its breach of this Agreement or violation of applicable laws, provided that the indemnified party provides prompt notice and cooperates in the defense."
+  notes: "Mutual indemnification with reasonable conditions"
+  risk_level: "medium"
+  category: "indemnification"
+
+- label: "Limitation of Liability"
+  text: "In no event shall either party be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or business opportunities, regardless of the theory of liability."
+  notes: "Standard limitation of liability clause"
+  risk_level: "medium"
+  category: "liability"
