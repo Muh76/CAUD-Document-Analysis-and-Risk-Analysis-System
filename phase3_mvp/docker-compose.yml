@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  # Phase 3 API Service
+  api:
+    build: 
+      context: .
+      dockerfile: docker/api.Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - API_TOKEN=devtoken
+      - MODEL_SNAPSHOT=snapshot_20250909
+      - ARTIFACTS_DIR=phase3_mvp/artifacts/snapshot_20250909
+      - RAG_COLLECTION=cuad-safe-clauses
+      - RAG_INDEX_DIR=phase3_mvp/rag/index
+      - EMBEDDING_MODEL=all-MiniLM-L6-v2
+      - SECRET_KEY=your-secret-key-here
+      - CORS_ORIGINS=http://localhost:8501,http://127.0.0.1:8501
+      - MAX_FILE_SIZE_MB=10
+      - ALLOWED_MIME_TYPES=application/pdf,text/plain
+      - RATE_LIMIT_PER_MINUTE=60
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+    volumes:
+      - ./phase3_mvp/artifacts:/app/artifacts:ro
+      - ./phase3_mvp/samples:/app/samples:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Phase 3 UI Service
+  ui:
+    build:
+      context: .
+      dockerfile: docker/ui.Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - api
+    volumes:
+      - ./phase3_mvp/samples:/app/samples:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

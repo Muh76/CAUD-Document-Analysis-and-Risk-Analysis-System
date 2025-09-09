@@ -1,0 +1,21 @@
+PROFESSIONAL SERVICES AGREEMENT
+
+This Professional Services Agreement ("Agreement") is made and entered into as of March 1, 2024, by and between ServiceProvider Corp., a New York corporation ("Provider"), and ClientCompany Inc., a Texas corporation ("Client").
+
+ARTICLE I - SERVICES
+Provider shall perform the services described in Schedule A attached hereto and incorporated herein by reference.
+
+ARTICLE II - TERM
+The term of this Agreement shall commence on the Effective Date and shall continue until December 31, 2024, unless terminated earlier pursuant to the terms herein.
+
+ARTICLE III - PAYMENT TERMS
+Client shall pay Provider the fees set forth in Schedule B within thirty (30) days of receipt of invoice.
+
+ARTICLE IV - GOVERNING LAW
+This Agreement shall be governed by the laws of the State of New York.
+
+ARTICLE V - LIMITATION OF LIABILITY
+Provider's total liability shall not exceed the total fees paid by Client under this Agreement.
+
+ARTICLE VI - TERMINATION FOR CONVENIENCE
+Either party may terminate this Agreement upon thirty (30) days written notice to the other party.

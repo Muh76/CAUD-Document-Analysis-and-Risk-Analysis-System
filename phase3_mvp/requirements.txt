@@ -1,0 +1,55 @@
+# Phase 3 MVP Requirements
+
+# Core ML and Data Processing
+numpy==1.24.3
+pandas==2.0.3
+scikit-learn==1.3.0
+scipy==1.11.1
+
+# Deep Learning
+torch==2.0.1
+transformers==4.31.0
+sentence-transformers==2.2.2
+
+# Text Processing
+PyMuPDF==1.23.5
+pdfplumber==0.9.0
+nltk==3.8.1
+spacy==3.6.1
+
+# API Framework
+fastapi==0.103.1
+uvicorn[standard]==0.23.2
+pydantic==2.0.3
+
+# UI Framework
+streamlit==1.25.0
+plotly==5.15.0
+
+# RAG System
+chromadb==0.4.6
+langchain==0.0.292
+
+# Security and Auth
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Logging and Monitoring
+structlog==23.1.0
+prometheus-client==0.17.1
+
+# Testing
+pytest==7.4.0
+pytest-cov==4.1.0
+httpx==0.24.1
+
+# Development Tools
+bandit==1.7.5
+safety==2.3.4
+flake8==6.0.0
+
+# Utilities
+python-dotenv==1.0.0
+pathlib2==2.3.7
+typing-extensions==4.7.1
