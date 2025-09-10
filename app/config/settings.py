@@ -5,11 +5,11 @@ Application configuration using Pydantic Settings.
 import os
 from pathlib import Path
 from typing import List, Optional, Dict, Any
-from pydantic import BaseSettings, Field, validator
-from pydantic_settings import BaseSettings as PydanticBaseSettings
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings
 
 
-class Settings(PydanticBaseSettings):
+class Settings(BaseSettings):
     """Application settings with environment variable support."""
 
     # Application
@@ -87,13 +87,15 @@ class Settings(PydanticBaseSettings):
     # Streamlit Share
     streamlit_share_url: Optional[str] = Field(default=None, env="STREAMLIT_SHARE_URL")
 
-    @validator('cors_origins', pre=True)
+    @field_validator('cors_origins', mode='before')
+    @classmethod
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
             return [origin.strip() for origin in v.split(',')]
         return v
 
-    @validator('allowed_mime_types', pre=True)
+    @field_validator('allowed_mime_types', mode='before')
+    @classmethod
     def parse_mime_types(cls, v):
         if isinstance(v, str):
             return [mime.strip() for mime in v.split(',')]
