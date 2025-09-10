@@ -74,7 +74,7 @@ class RiskReportResponse(BaseModel):
 class ExportRequest(BaseModel):
     """Request for data export."""
     contract_id: str
-    format: str = Field(..., regex="^(csv|json)$")
+    format: str = Field(..., pattern="^(csv|json)$")
     token: Optional[str] = None
 
 class HealthResponse(BaseModel):
