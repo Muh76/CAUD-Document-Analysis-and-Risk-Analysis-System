@@ -15,7 +15,6 @@ RUN pip install --no-cache-dir -e .
 
 # Copy application code
 COPY app/ ./app/
-COPY artifacts/ ./artifacts/
 
 # Create necessary directories
 RUN mkdir -p app/var/preds app/var/feedback app/var/indices
