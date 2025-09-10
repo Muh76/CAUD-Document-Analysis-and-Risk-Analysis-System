@@ -29,20 +29,18 @@ from core.io import IOUtils
 
 # Create FastAPI app
 app = FastAPI(
-    # Add security and logging middleware
-    security_manager = SecurityManager()
-    app.add_middleware(SecurityMiddleware, security_manager=security_manager)
-    app.add_middleware(LoggingMiddleware)
-    app.add_middleware(MetricsMiddleware)
-    app.add_middleware(CORSMiddleware)
-
-    
     title="Contract Review & Risk Analysis API",
     description="API for analyzing contracts and assessing risk",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+# Add middleware after app creation
+security_manager = SecurityManager()
+app.add_middleware(SecurityMiddleware, security_manager=security_manager)
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(MetricsMiddleware)
 
 # CORS middleware
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:8501,http://127.0.0.1:8501").split(",")
