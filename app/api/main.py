@@ -322,8 +322,8 @@ async def export_contract_data(
                 "risk_report": "JSON risk report summary"
             }
         }
-    
-    @app.exception_handler(Exception)
+
+@app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     """Global exception handler."""
     return JSONResponse(
