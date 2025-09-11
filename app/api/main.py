@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, Query, Header
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware as FastAPICORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 import json
 
@@ -46,10 +46,7 @@ app.add_middleware(MetricsMiddleware)
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:8501,http://127.0.0.1:8501").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allowed_origins=cors_origins,
 )
 
 # Global storage for batch jobs (in production, use Redis or database)
