@@ -150,8 +150,51 @@ def contract_analysis_page():
         if uploaded_file:
             if uploaded_file.type == "text/plain":
                 contract_text = str(uploaded_file.read(), "utf-8")
+            elif uploaded_file.type == "application/pdf":
+                # Handle PDF files
+                import base64
+                file_bytes = uploaded_file.read()
+                file_b64 = base64.b64encode(file_bytes).decode('utf-8')
+                
+                # Send PDF to API for analysis
+                payload = {
+                    "contract_id": f"pdf_{uploaded_file.name}",
+                    "file_b64": file_b64,
+                    "mime": "application/pdf"
+                }
+                
+                # Try with authentication first, then without
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer demo-token"
+                }
+                
+                response = requests.post(
+                    f"{API_BASE_URL}/analyze_contract",
+                    json=payload,
+                    headers=headers,
+                    timeout=30
+                )
+                
+                # If 401, try without authentication
+                if response.status_code == 401:
+                    headers = {"Content-Type": "application/json"}
+                    response = requests.post(
+                        f"{API_BASE_URL}/analyze_contract",
+                        json=payload,
+                        headers=headers,
+                        timeout=30
+                    )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    display_analysis_results(result)
+                    return
+                else:
+                    st.error(f"PDF analysis failed: {response.status_code} - {response.text}")
+                    return
             else:
-                st.warning("PDF processing not available in this demo version")
+                st.warning(f"Unsupported file type: {uploaded_file.type}")
                 return
     
     # Analysis button

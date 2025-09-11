@@ -104,9 +104,18 @@ async def analyze_contract(
         elif request.file_b64:
             # Decode base64 file
             try:
-                file_content = base64.b64decode(request.file_b64).decode('utf-8')
-                # For now, treat as single clause - in production, use TextIngestion
-                clauses = [file_content]
+                file_content = base64.b64decode(request.file_b64)
+                
+                # Check if it's a PDF file
+                if request.mime == "application/pdf":
+                    # Use TextIngestion to process PDF
+                    from app.core.text_ingest import TextIngestion
+                    text_ingestion = TextIngestion()
+                    chunks = text_ingestion.process_contract_bytes(file_content, "application/pdf")
+                    clauses = [chunk.text for chunk in chunks]
+                else:
+                    # For text files, decode as UTF-8
+                    clauses = [file_content.decode('utf-8')]
             except Exception as e:
                 raise HTTPException(status_code=400, detail=f"Invalid file content: {str(e)}")
         else:
