@@ -1,0 +1,7 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'docker/api.Dockerfile', '-t', 'gcr.io/$PROJECT_ID/contract-analysis-api:latest', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/contract-analysis-api:latest']
+images:
+  - 'gcr.io/$PROJECT_ID/contract-analysis-api:latest'

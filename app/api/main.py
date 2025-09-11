@@ -19,13 +19,13 @@ from .schemas import (
 from .deps import (
     get_settings, get_analyzer, get_uptime, verify_token, verify_token_optional, check_rate_limit
 )
-from core.text_ingest import TextIngestion
-from core.logging import logger, request_logger, metrics
-from core.security import SecurityManager
-from core.middleware import SecurityMiddleware, LoggingMiddleware, MetricsMiddleware, CORSMiddleware
+from app.core.text_ingest import TextIngestion
+from app.core.logging import logger, request_logger, metrics
+from app.core.security import SecurityManager
+from app.core.middleware import SecurityMiddleware, LoggingMiddleware, MetricsMiddleware, CORSMiddleware
 
-from core.export import ExportManager
-from core.io import IOUtils
+from app.core.export import ExportManager
+from app.core.io import IOUtils
 
 # Create FastAPI app
 app = FastAPI(

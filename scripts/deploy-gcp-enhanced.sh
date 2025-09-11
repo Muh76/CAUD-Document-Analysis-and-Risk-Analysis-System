@@ -4,7 +4,7 @@
 set -e
 
 # Configuration
-PROJECT_ID=${GCP_PROJECT_ID:-"your-project-id"}
+PROJECT_ID=${GCP_PROJECT_ID:-"arched-catwalk-459814-b0"}
 SERVICE_NAME=${GCP_SERVICE_NAME:-"contract-analysis-api"}
 REGION=${GCP_REGION:-"us-central1"}
 ENVIRONMENT=${DEPLOYMENT_ENVIRONMENT:-"production"}
@@ -38,12 +38,9 @@ gcloud services enable cloudbuild.googleapis.com
 gcloud services enable run.googleapis.com
 gcloud services enable containerregistry.googleapis.com
 
-# Build and push Docker image
-echo -e "${GREEN}📦 Building Docker image...${NC}"
-docker build -f docker/api.Dockerfile -t ${IMAGE_NAME}:latest .
-
-echo -e "${GREEN}⬆️ Pushing to Google Container Registry...${NC}"
-docker push ${IMAGE_NAME}:latest
+# Build and push Docker image using Cloud Build
+echo -e "${GREEN}📦 Building Docker image with Cloud Build...${NC}"
+gcloud builds submit --tag ${IMAGE_NAME}:latest .
 
 # Deploy to Cloud Run
 echo -e "${GREEN}🚀 Deploying to Cloud Run...${NC}"

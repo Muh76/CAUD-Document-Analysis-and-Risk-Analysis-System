@@ -8,8 +8,8 @@ from typing import Optional
 from fastapi import HTTPException, Depends, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from core.settings import Settings
-from core.pipeline import ContractAnalyzer
+from app.core.settings import Settings
+from app.core.pipeline import ContractAnalyzer
 
 # Global instances
 settings = None

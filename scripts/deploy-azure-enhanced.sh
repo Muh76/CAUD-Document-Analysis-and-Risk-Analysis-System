@@ -8,7 +8,7 @@ RESOURCE_GROUP=${AZURE_RESOURCE_GROUP:-"contract-analysis-rg"}
 LOCATION=${AZURE_LOCATION:-"East US"}
 CONTAINER_APP_NAME=${AZURE_CONTAINER_APP_NAME:-"contract-analysis"}
 ENVIRONMENT=${DEPLOYMENT_ENVIRONMENT:-"production"}
-REGISTRY_NAME="${CONTAINER_APP_NAME}registry"
+REGISTRY_NAME="mjbabaiecontractregistry"
 
 # Colors for output
 RED='\033[0;31m'
