@@ -9,8 +9,15 @@ import json
 from typing import Dict, Any, List
 import time
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+
+# Try to import plotly, fallback to basic charts if not available
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+    st.warning("Plotly not available, using basic charts")
 
 # Page configuration
 st.set_page_config(
@@ -192,17 +199,21 @@ def display_analysis_results(result: Dict[str, Any]):
             st.subheader("📊 Risk Distribution")
             risk_counts = df['Risk Level'].value_counts()
             
-            fig = px.pie(
-                values=risk_counts.values,
-                names=risk_counts.index,
-                title="Risk Level Distribution",
-                color_discrete_map={
-                    'low': '#28a745',
-                    'medium': '#ffc107', 
-                    'high': '#dc3545'
-                }
-            )
-            st.plotly_chart(fig, use_container_width=True)
+            if PLOTLY_AVAILABLE:
+                fig = px.pie(
+                    values=risk_counts.values,
+                    names=risk_counts.index,
+                    title="Risk Level Distribution",
+                    color_discrete_map={
+                        'low': '#28a745',
+                        'medium': '#ffc107', 
+                        'high': '#dc3545'
+                    }
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                # Fallback to basic chart
+                st.bar_chart(risk_counts)
     
     # Recommendations
     if 'recommendations' in result and result['recommendations']:
@@ -260,15 +271,19 @@ def batch_analysis_page():
                 st.dataframe(batch_df, use_container_width=True)
                 
                 # Batch summary chart
-                fig = px.bar(
-                    batch_df,
-                    x='File',
-                    y='Risk Score',
-                    title="Risk Scores by File",
-                    color='Risk Score',
-                    color_continuous_scale='RdYlGn_r'
-                )
-                st.plotly_chart(fig, use_container_width=True)
+                if PLOTLY_AVAILABLE:
+                    fig = px.bar(
+                        batch_df,
+                        x='File',
+                        y='Risk Score',
+                        title="Risk Scores by File",
+                        color='Risk Score',
+                        color_continuous_scale='RdYlGn_r'
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    # Fallback to basic chart
+                    st.bar_chart(batch_df.set_index('File')['Risk Score'])
 
 def risk_reports_page():
     """Risk reports page."""
@@ -289,15 +304,19 @@ def risk_reports_page():
         'Average Risk Score': risk_scores
     })
     
-    fig = px.line(
-        trend_df,
-        x='Date',
-        y='Average Risk Score',
-        title="Monthly Average Risk Scores",
-        markers=True
-    )
-    fig.update_layout(yaxis_range=[0, 10])
-    st.plotly_chart(fig, use_container_width=True)
+    if PLOTLY_AVAILABLE:
+        fig = px.line(
+            trend_df,
+            x='Date',
+            y='Average Risk Score',
+            title="Monthly Average Risk Scores",
+            markers=True
+        )
+        fig.update_layout(yaxis_range=[0, 10])
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        # Fallback to basic chart
+        st.line_chart(trend_df.set_index('Date')['Average Risk Score'])
     
     # Risk categories
     st.subheader("🏷️ Risk Categories")
@@ -305,13 +324,18 @@ def risk_reports_page():
     categories = ['Payment Terms', 'Liability', 'Termination', 'Intellectual Property', 'Confidentiality']
     counts = [15, 12, 8, 6, 4]
     
-    fig = px.bar(
-        x=categories,
-        y=counts,
-        title="Risk Issues by Category",
-        labels={'x': 'Category', 'y': 'Number of Issues'}
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    if PLOTLY_AVAILABLE:
+        fig = px.bar(
+            x=categories,
+            y=counts,
+            title="Risk Issues by Category",
+            labels={'x': 'Category', 'y': 'Number of Issues'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        # Fallback to basic chart
+        category_df = pd.DataFrame({'Category': categories, 'Count': counts})
+        st.bar_chart(category_df.set_index('Category')['Count'])
 
 def system_info_page():
     """System information page."""
