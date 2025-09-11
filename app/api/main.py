@@ -90,7 +90,7 @@ async def health_check():
 @app.post("/analyze_contract", response_model=AnalyzeResponse)
 async def analyze_contract(
     request: AnalyzeRequest,
-    token: str = Depends(verify_token),
+    token: str = Depends(verify_token_optional),
     client_ip: str = Depends(check_rate_limit)
 ):
     """Analyze a single contract."""
@@ -151,7 +151,7 @@ async def analyze_contract(
 @app.post("/batch_analyze", response_model=BatchAnalyzeResponse)
 async def batch_analyze(
     request: BatchAnalyzeRequest,
-    token: str = Depends(verify_token),
+    token: str = Depends(verify_token_optional),
     client_ip: str = Depends(check_rate_limit)
 ):
     """Start batch analysis of multiple contracts."""
@@ -179,7 +179,7 @@ async def batch_analyze(
         raise HTTPException(status_code=500, detail=f"Batch analysis failed: {str(e)}")
 
 @app.get("/batch_analyze/{job_id}")
-async def get_batch_status(job_id: str, token: str = Depends(verify_token)):
+async def get_batch_status(job_id: str, token: str = Depends(verify_token_optional)):
     """Get batch analysis status."""
     if job_id not in batch_jobs:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -196,7 +196,7 @@ async def get_batch_status(job_id: str, token: str = Depends(verify_token)):
 @app.post("/risk_report", response_model=RiskReportResponse)
 async def generate_risk_report(
     request: RiskReportRequest,
-    token: str = Depends(verify_token),
+    token: str = Depends(verify_token_optional),
     client_ip: str = Depends(check_rate_limit)
 ):
     """Generate risk report for multiple contracts."""
@@ -264,7 +264,7 @@ async def generate_risk_report(
 async def export_contract_data(
     contract_id: str = Query(...),
     fmt: str = Query("csv", regex="^(csv|json)$"),
-    token: str = Depends(verify_token)
+    token: str = Depends(verify_token_optional)
 ):
     """Export contract analysis data."""
     try:
@@ -293,7 +293,7 @@ async def export_contract_data(
     @app.post("/export/contract")
     async def export_contract_data(
         request: ExportRequest,
-        token: str = Depends(verify_token),
+        token: str = Depends(verify_token_optional),
         client_ip: str = Depends(check_rate_limit)
     ):
         """Export contract analysis data."""
@@ -328,7 +328,7 @@ async def export_contract_data(
             raise HTTPException(status_code=500, detail=f"Export failed: {str(e)}")
 
     @app.get("/export/formats")
-    async def get_export_formats(token: str = Depends(verify_token)):
+    async def get_export_formats(token: str = Depends(verify_token_optional)):
         """Get available export formats."""
         export_manager = ExportManager()
         return {

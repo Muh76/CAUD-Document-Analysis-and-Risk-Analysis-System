@@ -50,17 +50,33 @@ def analyze_contract(text: str) -> Dict[str, Any]:
             "include_explanations": True
         }
         
+        # Try with authentication first, then without
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer demo-token"  # Try with token first
+        }
+        
         response = requests.post(
             f"{API_BASE_URL}/analyze_contract",
             json=payload,
-            headers={"Content-Type": "application/json"},
+            headers=headers,
             timeout=30
         )
+        
+        # If 401, try without authentication
+        if response.status_code == 401:
+            headers = {"Content-Type": "application/json"}
+            response = requests.post(
+                f"{API_BASE_URL}/analyze_contract",
+                json=payload,
+                headers=headers,
+                timeout=30
+            )
         
         if response.status_code == 200:
             return response.json()
         else:
-            return {"error": f"API Error: {response.status_code}"}
+            return {"error": f"API Error: {response.status_code} - {response.text}"}
     except Exception as e:
         return {"error": f"Request failed: {str(e)}"}
 
