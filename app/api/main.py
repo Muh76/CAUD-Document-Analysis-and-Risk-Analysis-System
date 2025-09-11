@@ -52,6 +52,27 @@ app.add_middleware(
 # Global storage for batch jobs (in production, use Redis or database)
 batch_jobs = {}
 
+# Root endpoint
+@app.get("/")
+async def root():
+    """Root endpoint with API information."""
+    return {
+        "message": "Contract Review & Risk Analysis API",
+        "version": "1.0.0",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/health",
+        "endpoints": [
+            "/health",
+            "/analyze_contract",
+            "/batch_analyze", 
+            "/risk_report",
+            "/export",
+            "/metrics",
+            "/docs"
+        ]
+    }
+
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint."""
