@@ -20,7 +20,7 @@ def get_settings() -> Settings:
     """Get application settings."""
     global settings
     if settings is None:
-        artifacts_dir = os.getenv("ARTIFACTS_DIR", "phase3_mvp/artifacts/snapshot_20250909")
+        artifacts_dir = os.getenv("ARTIFACTS_DIR", "app/artifacts/snapshot_20250909")
         settings = Settings(artifacts_dir)
     return settings
 
@@ -28,7 +28,7 @@ def get_analyzer() -> ContractAnalyzer:
     """Get contract analyzer singleton."""
     global analyzer
     if analyzer is None:
-        artifacts_dir = os.getenv("ARTIFACTS_DIR", "phase3_mvp/artifacts/snapshot_20250909")
+        artifacts_dir = os.getenv("ARTIFACTS_DIR", "app/artifacts/snapshot_20250909")
         analyzer = ContractAnalyzer(artifacts_dir)
     return analyzer
 
