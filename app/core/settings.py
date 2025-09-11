@@ -11,7 +11,7 @@ class Settings:
     """Application settings and configuration."""
 
     def __init__(self, artifacts_dir: str = None):
-        self.artifacts_dir = Path(artifacts_dir) if artifacts_dir else Path("phase3_mvp/artifacts/snapshot_20250909")
+        self.artifacts_dir = Path(artifacts_dir) if artifacts_dir else Path("app/artifacts/snapshot_20250909")
         self.model_snapshot = self.artifacts_dir.name
         self.label_map_path = self.artifacts_dir / "label_map.json"
         self.thresholds_path = self.artifacts_dir / "thresholds.json"
