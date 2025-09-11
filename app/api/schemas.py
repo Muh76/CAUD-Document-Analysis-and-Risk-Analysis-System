@@ -2,7 +2,7 @@
 Pydantic schemas for FastAPI request/response models.
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
@@ -79,6 +79,8 @@ class ExportRequest(BaseModel):
 
 class HealthResponse(BaseModel):
     """Health check response."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
     status: str
     model_snapshot: str
     calibration_version: str
@@ -87,6 +89,8 @@ class HealthResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     """Error response."""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
     error: str
     detail: Optional[str] = None
     timestamp: datetime
