@@ -7,9 +7,20 @@ import requests
 import json
 from typing import Dict, Any, List
 import time
+import sys
+import os
 
-from .components import ContractAnalysisComponents
-from .state import UIState
+# Add the app directory to Python path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+# Import components directly
+try:
+    from app.ui.components import ContractAnalysisComponents
+    from app.ui.state import UIState
+except ImportError:
+    # Fallback for local development
+    from .components import ContractAnalysisComponents
+    from .state import UIState
 
 # Page configuration
 st.set_page_config(
