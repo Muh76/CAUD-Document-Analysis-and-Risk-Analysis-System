@@ -232,7 +232,7 @@ def display_analysis_results(result: Dict[str, Any]):
             avg_confidence = sum(r.get('risk', 0) for r in results) / len(results)
             st.metric("Confidence", f"{avg_confidence:.1%}")
         else:
-            st.metric("Confidence", "0.0%")
+            st.metric("Confidence", "N/A")
     
     with col3:
         total_clauses = result.get('total_clauses', 0)
@@ -244,8 +244,21 @@ def display_analysis_results(result: Dict[str, Any]):
     
     st.divider()
     
-    # Detailed results
+    # Check if we have any results
     results = result.get('results', [])
+    if not results:
+        st.warning("⚠️ **No clauses detected with sufficient confidence**")
+        st.info("The contract may not contain recognizable legal clauses, or the text format may not be suitable for analysis.")
+        
+        # Show raw text preview for debugging
+        if 'text' in result:
+            st.subheader("📄 Text Preview")
+            preview_text = result['text'][:500] + "..." if len(result['text']) > 500 else result['text']
+            st.text_area("First 500 characters:", preview_text, height=100, disabled=True)
+        
+        return
+    
+    # Detailed results
     if results:
         st.subheader("📋 Clause Analysis")
         
@@ -281,7 +294,7 @@ def display_analysis_results(result: Dict[str, Any]):
                 fig = px.pie(
                     values=risk_counts.values,
                     names=risk_counts.index,
-                    title="Risk Level Distribution",
+                    title=f"Risk Level Distribution (N={len(clauses_data)} clauses)",
                     color_discrete_map={
                         'low': '#28a745',
                         'medium': '#ffc107', 
@@ -292,8 +305,6 @@ def display_analysis_results(result: Dict[str, Any]):
             else:
                 # Fallback to basic chart
                 st.bar_chart(risk_counts)
-    else:
-        st.info("No clauses found in the contract.")
     
     # Recommendations
     if 'recommendations' in result and result['recommendations']:

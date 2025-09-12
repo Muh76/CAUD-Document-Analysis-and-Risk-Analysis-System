@@ -150,10 +150,16 @@ class ContractAnalyzer:
             # Predict labels
             prediction = self.predict_clause(clause_text)
 
-            # Calculate risk score
+            # Calculate confidence and risk score
             model_score = max(prediction.probabilities)
             rule_score = 0.0  # Placeholder for rule-based scoring
             risk_score = self.score_risk(rule_score, model_score)
+            
+            # Confidence gating - only include results with sufficient confidence
+            min_confidence_threshold = 0.15  # 15% minimum confidence
+            if model_score < min_confidence_threshold:
+                # Skip low-confidence results
+                continue
 
             # Categorize risk
             if risk_score >= high_risk_threshold:
