@@ -9,7 +9,7 @@ from .schemas import TextChunk
 class ClauseChunker:
     """Intelligent text chunking for contract clauses."""
 
-    def __init__(self, max_chunk_size: int = 500, min_chunk_size: int = 100, overlap_size: int = 50):
+    def __init__(self, max_chunk_size: int = 500, min_chunk_size: int = 20, overlap_size: int = 50):
         self.max_chunk_size = max_chunk_size
         self.min_chunk_size = min_chunk_size
         self.overlap_size = overlap_size

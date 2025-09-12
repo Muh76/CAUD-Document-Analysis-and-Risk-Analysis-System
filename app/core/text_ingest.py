@@ -19,7 +19,7 @@ class TextIngestion:
         self.pdf_processor = PDFProcessor(use_pymupdf=use_pymupdf)
         self.clause_chunker = ClauseChunker(
             max_chunk_size=chunk_size,
-            min_chunk_size=100,
+            min_chunk_size=20,
             overlap_size=chunk_overlap
         )
 
