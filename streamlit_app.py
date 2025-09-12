@@ -221,34 +221,52 @@ def display_analysis_results(result: Dict[str, Any]):
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Risk Score", f"{result.get('risk_score', 0):.1f}/10")
+        # Convert overall_risk_score (0-1) to 0-10 scale
+        risk_score = result.get('overall_risk_score', 0) * 10
+        st.metric("Risk Score", f"{risk_score:.1f}/10")
     
     with col2:
-        st.metric("Confidence", f"{result.get('confidence', 0):.1%}")
+        # Calculate average confidence from results
+        results = result.get('results', [])
+        if results:
+            avg_confidence = sum(r.get('risk', 0) for r in results) / len(results)
+            st.metric("Confidence", f"{avg_confidence:.1%}")
+        else:
+            st.metric("Confidence", "0.0%")
     
     with col3:
-        clauses_count = len(result.get('clauses', []))
-        st.metric("Clauses Found", clauses_count)
+        total_clauses = result.get('total_clauses', 0)
+        st.metric("Clauses Found", total_clauses)
     
     with col4:
-        issues_count = len([c for c in result.get('clauses', []) if c.get('risk_level', 'low') == 'high'])
-        st.metric("High Risk Issues", issues_count)
+        high_risk_clauses = result.get('high_risk_clauses', 0)
+        st.metric("High Risk Issues", high_risk_clauses)
     
     st.divider()
     
     # Detailed results
-    if 'clauses' in result and result['clauses']:
+    results = result.get('results', [])
+    if results:
         st.subheader("📋 Clause Analysis")
         
         # Create DataFrame for display
         clauses_data = []
-        for clause in result['clauses']:
+        for i, clause_result in enumerate(results):
+            # Determine risk level based on risk score
+            risk_score = clause_result.get('risk', 0)
+            if risk_score > 0.3:
+                risk_level = 'high'
+            elif risk_score > 0.1:
+                risk_level = 'medium'
+            else:
+                risk_level = 'low'
+            
             clauses_data.append({
-                'Clause': clause.get('text', '')[:100] + '...' if len(clause.get('text', '')) > 100 else clause.get('text', ''),
-                'Type': clause.get('type', 'Unknown'),
-                'Risk Level': clause.get('risk_level', 'Unknown'),
-                'Confidence': f"{clause.get('confidence', 0):.1%}",
-                'Explanation': clause.get('explanation', 'No explanation available')
+                'Clause': clause_result.get('snippet', '')[:100] + '...' if len(clause_result.get('snippet', '')) > 100 else clause_result.get('snippet', ''),
+                'Type': 'Contract Clause',
+                'Risk Level': risk_level,
+                'Confidence': f"{risk_score:.1%}",
+                'Explanation': ', '.join(clause_result.get('rationale', ['No explanation available']))
             })
         
         df = pd.DataFrame(clauses_data)
@@ -274,6 +292,8 @@ def display_analysis_results(result: Dict[str, Any]):
             else:
                 # Fallback to basic chart
                 st.bar_chart(risk_counts)
+    else:
+        st.info("No clauses found in the contract.")
     
     # Recommendations
     if 'recommendations' in result and result['recommendations']:
