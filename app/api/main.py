@@ -96,6 +96,10 @@ async def analyze_contract(
 ):
     """Analyze a single contract."""
     try:
+        print(f"DEBUG API: Received request for contract {request.contract_id}")
+        print(f"DEBUG API: Text length: {len(request.text) if request.text else 0}")
+        print(f"DEBUG API: Has file: {bool(request.file_b64)}")
+        
         analyzer = get_analyzer()
         settings = get_settings()
 
@@ -105,6 +109,9 @@ async def analyze_contract(
             from app.core.text_ingest import TextIngestion
             text_ingestion = TextIngestion()
             chunks = text_ingestion.chunk_text(request.text)
+            print(f"DEBUG API: Created {len(chunks)} chunks from text")
+            for i, chunk in enumerate(chunks[:3]):  # Show first 3 chunks
+                print(f"DEBUG API: Chunk {i}: '{chunk.text[:50]}...'")
         elif request.file_b64:
             # Decode base64 file
             try:
