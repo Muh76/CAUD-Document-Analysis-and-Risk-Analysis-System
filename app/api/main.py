@@ -108,11 +108,19 @@ async def analyze_contract(
                 
                 # Check if it's a PDF file
                 if request.mime == "application/pdf":
-                    # Use TextIngestion to process PDF
-                    from app.core.text_ingest import TextIngestion
-                    text_ingestion = TextIngestion()
-                    chunks = text_ingestion.process_contract_bytes(file_content, "application/pdf")
-                    clauses = [chunk.text for chunk in chunks]
+                    try:
+                        # Use TextIngestion to process PDF
+                        from app.core.text_ingest import TextIngestion
+                        text_ingestion = TextIngestion()
+                        chunks = text_ingestion.process_contract_bytes(file_content, "application/pdf")
+                        clauses = [chunk.text for chunk in chunks if chunk.text.strip()]
+                        
+                        # If no text extracted, fallback to simple processing
+                        if not clauses:
+                            clauses = ["PDF text extraction failed - please try uploading as text file"]
+                    except Exception as pdf_error:
+                        # Fallback for PDF processing errors
+                        clauses = [f"PDF processing error: {str(pdf_error)} - please try uploading as text file"]
                 else:
                     # For text files, decode as UTF-8
                     clauses = [file_content.decode('utf-8')]
