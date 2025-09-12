@@ -45,6 +45,7 @@ def analyze_contract(text: str) -> Dict[str, Any]:
     """Analyze contract text using the API."""
     try:
         payload = {
+            "contract_id": f"text_{hash(text) % 10000}",  # Generate a unique contract ID
             "text": text,
             "include_confidence": True,
             "include_explanations": True
