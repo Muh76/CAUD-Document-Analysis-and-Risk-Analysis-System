@@ -256,6 +256,9 @@ class ContractAnalyzer:
         """Analyze a contract and return comprehensive results."""
         start_time = perf_counter()
 
+        print(f"DEBUG: Starting analysis for contract {contract_id}")
+        print(f"DEBUG: Received {len(clauses)} TextChunk objects")
+
         # Normalize contract ID
         normalized_id = IOUtils.normalize_contract_id(contract_id)
 
@@ -267,7 +270,10 @@ class ContractAnalyzer:
         high_risk_threshold = self.settings.get_global_threshold("HIGH_RISK_THRESHOLD")
         medium_risk_threshold = self.settings.get_global_threshold("MEDIUM_RISK_THRESHOLD")
 
+        print(f"DEBUG: Processing {len(clauses)} clauses...")
+
         for i, chunk in enumerate(clauses):
+            print(f"DEBUG: Processing chunk {i}: '{chunk.text[:50]}...' (ID: {chunk.chunk_id})")
             # Extract text from TextChunk object
             clause_text = chunk.text
             
