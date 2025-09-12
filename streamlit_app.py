@@ -6,6 +6,7 @@ Self-contained version for Streamlit Share deployment.
 import streamlit as st
 import requests
 import json
+import base64
 from typing import Dict, Any, List
 import time
 import pandas as pd
@@ -153,7 +154,6 @@ def contract_analysis_page():
                 contract_text = str(uploaded_file.read(), "utf-8")
             elif uploaded_file.type == "application/pdf":
                 # Handle PDF files
-                import base64
                 file_bytes = uploaded_file.read()
                 file_b64 = base64.b64encode(file_bytes).decode('utf-8')
                 
@@ -602,8 +602,8 @@ def risk_reports_page():
                 st.error(f"Error generating risk report: {str(e)}")
     
     # Sample data section (fallback)
-    st.subheader("📊 Sample Analytics")
-    st.info("📊 Below shows sample analytics. Use the form above to generate real reports.")
+    st.subheader("📊 Sample Analytics (Demo Data)")
+    st.info("📊 Below shows sample analytics for demonstration. Use the form above to generate real reports from your contract data.")
     
     # Sample risk trends
     st.subheader("📈 Risk Trends Over Time")

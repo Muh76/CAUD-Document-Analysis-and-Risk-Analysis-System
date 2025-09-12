@@ -121,17 +121,25 @@ async def analyze_contract(
                         # If no text extracted, fallback to simple processing
                         if not chunks:
                             from app.core.schemas import TextChunk
-                            chunks = [TextChunk(text="PDF text extraction failed - please try uploading as text file", chunk_id=0)]
+                            chunks = [TextChunk(
+                                text="PDF text extraction failed - please try uploading as text file", 
+                                start_offset=0,
+                                end_offset=len("PDF text extraction failed - please try uploading as text file"),
+                                chunk_id=0
+                            )]
                     except Exception as pdf_error:
                         # Enhanced error handling for PDF processing
                         error_msg = str(pdf_error)
                         from app.core.schemas import TextChunk
                         if "document closed" in error_msg.lower():
-                            chunks = [TextChunk(text="PDF file appears to be corrupted or password-protected. Please try a different PDF file or convert to text format.", chunk_id=0)]
+                            error_text = "PDF file appears to be corrupted or password-protected. Please try a different PDF file or convert to text format."
+                            chunks = [TextChunk(text=error_text, start_offset=0, end_offset=len(error_text), chunk_id=0)]
                         elif "invalid" in error_msg.lower():
-                            chunks = [TextChunk(text="PDF file format is not supported. Please try uploading a different PDF or convert to text format.", chunk_id=0)]
+                            error_text = "PDF file format is not supported. Please try uploading a different PDF or convert to text format."
+                            chunks = [TextChunk(text=error_text, start_offset=0, end_offset=len(error_text), chunk_id=0)]
                         else:
-                            chunks = [TextChunk(text=f"PDF processing error: {error_msg} - please try uploading as text file", chunk_id=0)]
+                            error_text = f"PDF processing error: {error_msg} - please try uploading as text file"
+                            chunks = [TextChunk(text=error_text, start_offset=0, end_offset=len(error_text), chunk_id=0)]
                 else:
                     # For text files, decode as UTF-8 and chunk
                     text = file_content.decode('utf-8')
