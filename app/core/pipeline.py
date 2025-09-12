@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 from .settings import Settings
-from .schemas import ContractAnalysis, ClauseResult, ModelPrediction
+from .schemas import ContractAnalysis, ClauseResult, ModelPrediction, TextChunk
 from .text_ingest import TextIngestion
 from .io import IOUtils
 
@@ -81,19 +81,33 @@ class ContractAnalyzer:
 
     def _predict_with_baseline_model(self, text: str) -> ModelPrediction:
         """Use the actual baseline TF-IDF + Logistic Regression model."""
-        model = self.models["baseline"]
+        model_dict = self.models["baseline"]  # This is a dict with 'vectorizer' and 'classifier'
         
         # Preprocess text
         processed_text = IOUtils.preprocess_text(text)
         
-        # Get prediction
-        if hasattr(model, 'predict_proba'):
-            probs = model.predict_proba([processed_text])[0]
+        # Extract the actual sklearn objects from the dict
+        vectorizer = model_dict["vectorizer"]  # TfidfVectorizer
+        classifier = model_dict["classifier"]  # MultiOutputClassifier
+        
+        # Transform text using the vectorizer
+        text_features = vectorizer.transform([processed_text])
+        
+        # Get prediction from the classifier
+        if hasattr(classifier, 'predict_proba'):
+            probs_matrix = classifier.predict_proba(text_features)
+            # MultiOutputClassifier returns list of arrays, we need to flatten
+            probs = []
+            for prob_array in probs_matrix:
+                probs.extend(prob_array[0])  # Flatten the probabilities
         else:
             # Fallback for models without predict_proba
-            prediction = model.predict([processed_text])[0]
+            prediction = classifier.predict(text_features)
             probs = [0.1] * self.settings.num_labels
-            probs[prediction] = 0.9
+            # Set higher probability for predicted labels
+            for i, pred in enumerate(prediction[0]):
+                if pred == 1:  # If label is predicted
+                    probs[i] = 0.9
         
         # Ensure we have the right number of probabilities
         if len(probs) != self.settings.num_labels:
@@ -112,14 +126,37 @@ class ContractAnalyzer:
 
     def _predict_with_calibration_model(self, text: str) -> ModelPrediction:
         """Use the calibration model for better confidence estimates."""
-        model = self.models["calibration"]
+        calibration_dict = self.models["calibration"]  # This is a dict with calibration data
         
         # Preprocess text
         processed_text = IOUtils.preprocess_text(text)
         
-        # Get calibrated probabilities
-        if hasattr(model, 'predict_proba'):
-            probs = model.predict_proba([processed_text])[0]
+        # The calibration model is not a sklearn object, it's calibration data
+        # We need to use the baseline model first, then apply calibration
+        baseline_model_dict = self.models["baseline"]
+        vectorizer = baseline_model_dict["vectorizer"]
+        classifier = baseline_model_dict["classifier"]
+        
+        # Transform text using the vectorizer
+        text_features = vectorizer.transform([processed_text])
+        
+        # Get raw probabilities from baseline
+        if hasattr(classifier, 'predict_proba'):
+            probs_matrix = classifier.predict_proba(text_features)
+            raw_probs = []
+            for prob_array in probs_matrix:
+                raw_probs.extend(prob_array[0])
+            
+            # Apply calibration (simplified - in production you'd use proper calibration)
+            # For now, we'll use the calibration data to adjust confidence
+            calibrated_probs = []
+            for i, raw_prob in enumerate(raw_probs):
+                # Simple calibration: adjust based on calibration error
+                avg_error = calibration_dict.get("avg_calibration_error", 0.1)
+                calibrated_prob = max(0.0, min(1.0, raw_prob - avg_error))
+                calibrated_probs.append(calibrated_prob)
+            
+            probs = calibrated_probs
         else:
             probs = self._generate_realistic_probs(text)
         
@@ -215,7 +252,7 @@ class ContractAnalyzer:
         risk = 0.5 * rule_score + 0.3 * model_score + 0.2 * anomaly_score
         return min(risk, 1.0)  # Cap at 1.0
 
-    def analyze(self, contract_id: str, clauses: List[str]) -> ContractAnalysis:
+    def analyze(self, contract_id: str, clauses: List[TextChunk]) -> ContractAnalysis:
         """Analyze a contract and return comprehensive results."""
         start_time = perf_counter()
 
@@ -230,7 +267,10 @@ class ContractAnalyzer:
         high_risk_threshold = self.settings.get_global_threshold("HIGH_RISK_THRESHOLD")
         medium_risk_threshold = self.settings.get_global_threshold("MEDIUM_RISK_THRESHOLD")
 
-        for i, clause_text in enumerate(clauses):
+        for i, chunk in enumerate(clauses):
+            # Extract text from TextChunk object
+            clause_text = chunk.text
+            
             # Validate text length
             clause_text = IOUtils.validate_text_length(clause_text, self.settings.max_text_length)
 
@@ -258,7 +298,7 @@ class ContractAnalyzer:
 
             # Create clause result
             clause_result = ClauseResult(
-                clause_id=i,
+                clause_id=chunk.chunk_id,
                 text=clause_text,
                 probs=prediction.probabilities,
                 risk_score=risk_score,

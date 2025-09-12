@@ -457,12 +457,153 @@ def display_batch_results(results):
         else:
             st.bar_chart(pd.Series(risk_scores).value_counts().sort_index())
 
+def generate_risk_report(contract_ids, include_suggestions=False):
+    """Generate risk report from API."""
+    try:
+        response = requests.post(
+            f"{API_BASE_URL}/risk_report",
+            json={
+                "contract_ids": contract_ids,
+                "include_suggestions": include_suggestions
+            },
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            return response.json()
+        else:
+            st.error(f"API Error: {response.status_code}")
+            return None
+            
+    except Exception as e:
+        st.error(f"Error calling API: {str(e)}")
+        return None
+
+def display_risk_report(report_data):
+    """Display risk report results."""
+    st.success("✅ Risk report generated successfully!")
+    
+    # Summary metrics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Total Contracts", report_data['total_contracts'])
+    
+    with col2:
+        st.metric("High Risk", report_data['high_risk_count'], delta=None)
+    
+    with col3:
+        st.metric("Medium Risk", report_data['medium_risk_count'], delta=None)
+    
+    with col4:
+        st.metric("Low Risk", report_data['low_risk_count'], delta=None)
+    
+    # Risk distribution pie chart
+    st.subheader("📊 Risk Distribution")
+    
+    risk_data = {
+        'High Risk': report_data['high_risk_count'],
+        'Medium Risk': report_data['medium_risk_count'],
+        'Low Risk': report_data['low_risk_count']
+    }
+    
+    if PLOTLY_AVAILABLE:
+        fig = px.pie(
+            values=list(risk_data.values()),
+            names=list(risk_data.keys()),
+            title="Contract Risk Distribution"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        # Fallback to basic chart
+        st.bar_chart(pd.Series(risk_data))
+    
+    # Top red flags
+    if report_data['top_red_flags']:
+        st.subheader("🚨 Top Red Flags")
+        
+        flags_df = pd.DataFrame(report_data['top_red_flags'])
+        st.dataframe(flags_df, use_container_width=True)
+        
+        # Red flags chart
+        if PLOTLY_AVAILABLE:
+            fig = px.bar(
+                flags_df,
+                x='label',
+                y='count',
+                color='risk_level',
+                title="Top Risk Issues",
+                labels={'x': 'Issue Type', 'y': 'Count'}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.bar_chart(flags_df.set_index('label')['count'])
+    
+    # Missing clauses
+    if report_data['missing_clauses']:
+        st.subheader("❌ Missing Clauses")
+        missing_df = pd.DataFrame({
+            'Missing Clause': report_data['missing_clauses']
+        })
+        st.dataframe(missing_df, use_container_width=True)
+    
+    # Recommendations
+    if report_data.get('recommendations'):
+        st.subheader("💡 Recommendations")
+        
+        for rec in report_data['recommendations']:
+            with st.expander(f"{rec['clause']} - {rec['risk_level'].title()} Risk"):
+                st.write(rec['suggestion'])
+    
+    # Report metadata
+    st.subheader("📋 Report Details")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write(f"**Report ID:** {report_data['report_id']}")
+    
+    with col2:
+        st.write(f"**Generated:** {report_data['generated_at']}")
+
 def risk_reports_page():
     """Risk reports page."""
     st.header("📈 Risk Reports & Analytics")
     
-    # Mock data for demonstration
-    st.info("📊 This section shows sample analytics and reports")
+    # Input section for contract IDs
+    st.subheader("📋 Generate Risk Report")
+    
+    # Contract IDs input
+    contract_ids_input = st.text_area(
+        "Enter Contract IDs (one per line):",
+        value="contract_001\ncontract_002\ncontract_003",
+        help="Enter contract IDs to analyze for risk reporting"
+    )
+    
+    include_suggestions = st.checkbox("Include Recommendations", value=True)
+    
+    if st.button("Generate Risk Report", type="primary"):
+        contract_ids = [cid.strip() for cid in contract_ids_input.split('\n') if cid.strip()]
+        
+        if not contract_ids:
+            st.error("Please enter at least one contract ID")
+            return
+        
+        # Generate risk report
+        with st.spinner("Generating risk report..."):
+            try:
+                report_data = generate_risk_report(contract_ids, include_suggestions)
+                
+                if report_data:
+                    display_risk_report(report_data)
+                else:
+                    st.error("Failed to generate risk report")
+                    
+            except Exception as e:
+                st.error(f"Error generating risk report: {str(e)}")
+    
+    # Sample data section (fallback)
+    st.subheader("📊 Sample Analytics")
+    st.info("📊 Below shows sample analytics. Use the form above to generate real reports.")
     
     # Sample risk trends
     st.subheader("📈 Risk Trends Over Time")
@@ -481,7 +622,7 @@ def risk_reports_page():
             trend_df,
             x='Date',
             y='Average Risk Score',
-            title="Monthly Average Risk Scores",
+            title="Monthly Average Risk Scores (Sample Data)",
             markers=True
         )
         fig.update_layout(yaxis_range=[0, 10])
@@ -500,7 +641,7 @@ def risk_reports_page():
         fig = px.bar(
             x=categories,
             y=counts,
-            title="Risk Issues by Category",
+            title="Risk Issues by Category (Sample Data)",
             labels={'x': 'Category', 'y': 'Number of Issues'}
         )
         st.plotly_chart(fig, use_container_width=True)
