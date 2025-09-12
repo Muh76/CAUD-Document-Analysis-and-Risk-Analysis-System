@@ -5,9 +5,10 @@ FastAPI main application with all endpoints.
 import os
 import base64
 import uuid
+import asyncio
 from datetime import datetime
 from typing import List, Optional
-from fastapi import FastAPI, Depends, HTTPException, Query, Header
+from fastapi import FastAPI, Depends, HTTPException, Query, Header, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware as FastAPICORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 import json
@@ -114,13 +115,19 @@ async def analyze_contract(
                         text_ingestion = TextIngestion()
                         chunks = text_ingestion.process_contract_bytes(file_content, "application/pdf")
                         clauses = [chunk.text for chunk in chunks if chunk.text.strip()]
-                        
+
                         # If no text extracted, fallback to simple processing
                         if not clauses:
                             clauses = ["PDF text extraction failed - please try uploading as text file"]
                     except Exception as pdf_error:
-                        # Fallback for PDF processing errors
-                        clauses = [f"PDF processing error: {str(pdf_error)} - please try uploading as text file"]
+                        # Enhanced error handling for PDF processing
+                        error_msg = str(pdf_error)
+                        if "document closed" in error_msg.lower():
+                            clauses = ["PDF file appears to be corrupted or password-protected. Please try a different PDF file or convert to text format."]
+                        elif "invalid" in error_msg.lower():
+                            clauses = ["PDF file format is not supported. Please try uploading a different PDF or convert to text format."]
+                        else:
+                            clauses = [f"PDF processing error: {error_msg} - please try uploading as text file"]
                 else:
                     # For text files, decode as UTF-8
                     clauses = [file_content.decode('utf-8')]
@@ -168,6 +175,7 @@ async def analyze_contract(
 @app.post("/batch_analyze", response_model=BatchAnalyzeResponse)
 async def batch_analyze(
     request: BatchAnalyzeRequest,
+    background_tasks: BackgroundTasks,
     token: str = Depends(verify_token_optional),
     client_ip: str = Depends(check_rate_limit)
 ):
@@ -182,8 +190,12 @@ async def batch_analyze(
             "completed": 0,
             "results": [],
             "created_at": datetime.now(),
-            "contracts": request.contracts
+            "contracts": request.contracts,
+            "errors": []
         }
+
+        # Start background processing
+        background_tasks.add_task(process_batch_job, job_id)
 
         return BatchAnalyzeResponse(
             job_id=job_id,
@@ -195,9 +207,83 @@ async def batch_analyze(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Batch analysis failed: {str(e)}")
 
+async def process_batch_job(job_id: str):
+    """Process a batch job in the background."""
+    if job_id not in batch_jobs:
+        return
+    
+    job = batch_jobs[job_id]
+    job["status"] = "processing"
+    
+    try:
+        analyzer = get_analyzer()
+        
+        for i, contract in enumerate(job["contracts"]):
+            try:
+                # Process each contract
+                if contract.get("text"):
+                    # Text-based analysis
+                    clauses = [contract["text"]]
+                elif contract.get("file_b64"):
+                    # File-based analysis
+                    file_content = base64.b64decode(contract["file_b64"])
+                    if contract.get("mime") == "application/pdf":
+                        # Process PDF
+                        text_ingestion = TextIngestion()
+                        chunks = text_ingestion.process_contract_bytes(file_content, "application/pdf")
+                        clauses = [chunk.text for chunk in chunks if chunk.text.strip()]
+                    else:
+                        # Process text file
+                        clauses = [file_content.decode('utf-8')]
+                else:
+                    raise ValueError("No text or file content provided")
+                
+                # Analyze the contract
+                analysis = analyzer.analyze(contract.get("contract_id", f"batch_{i}"), clauses)
+                
+                # Store result
+                result = {
+                    "contract_id": contract.get("contract_id", f"batch_{i}"),
+                    "status": "completed",
+                    "overall_risk_score": analysis.overall_risk_score,
+                    "total_clauses": analysis.total_clauses,
+                    "high_risk_clauses": analysis.high_risk_clauses,
+                    "results": [
+                        {
+                            "risk": r.risk_score,
+                            "snippet": r.text[:200] + "..." if len(r.text) > 200 else r.text,
+                            "rationale": r.rationale
+                        } for r in analysis.results
+                    ]
+                }
+                
+                job["results"].append(result)
+                job["completed"] += 1
+                
+            except Exception as e:
+                # Handle individual contract errors
+                error_result = {
+                    "contract_id": contract.get("contract_id", f"batch_{i}"),
+                    "status": "error",
+                    "error": str(e),
+                    "overall_risk_score": 0.0,
+                    "total_clauses": 0,
+                    "high_risk_clauses": 0,
+                    "results": []
+                }
+                job["results"].append(error_result)
+                job["errors"].append(f"Contract {i}: {str(e)}")
+                job["completed"] += 1
+        
+        job["status"] = "completed"
+        
+    except Exception as e:
+        job["status"] = "failed"
+        job["errors"].append(f"Batch processing failed: {str(e)}")
+
 @app.get("/batch_analyze/{job_id}")
 async def get_batch_status(job_id: str, token: str = Depends(verify_token_optional)):
-    """Get batch analysis status."""
+    """Get batch analysis status and results."""
     if job_id not in batch_jobs:
         raise HTTPException(status_code=404, detail="Job not found")
 
@@ -207,7 +293,9 @@ async def get_batch_status(job_id: str, token: str = Depends(verify_token_option
         "status": job["status"],
         "total_contracts": job["total_contracts"],
         "completed": job["completed"],
-        "created_at": job["created_at"]
+        "created_at": job["created_at"],
+        "results": job["results"],
+        "errors": job.get("errors", [])
     }
 
 @app.post("/risk_report", response_model=RiskReportResponse)

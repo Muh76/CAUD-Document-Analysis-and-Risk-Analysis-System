@@ -319,62 +319,143 @@ def batch_analysis_page():
     
     uploaded_files = st.file_uploader(
         "Upload multiple contract files",
-        type=['txt'],
+        type=['txt', 'pdf'],
         accept_multiple_files=True,
-        help="Upload multiple text files for batch processing"
+        help="Upload multiple text or PDF files for batch processing"
     )
     
     if uploaded_files:
         st.write(f"📁 {len(uploaded_files)} files uploaded")
         
         if st.button("🔄 Process Batch", type="primary"):
-            progress_bar = st.progress(0)
-            results = []
-            
-            for i, file in enumerate(uploaded_files):
+            with st.spinner("Processing batch analysis..."):
                 try:
-                    text = str(file.read(), "utf-8")
-                    result = analyze_contract(text)
-                    result['filename'] = file.name
-                    results.append(result)
+                    # Prepare contracts for batch processing
+                    contracts = []
+                    for file in uploaded_files:
+                        if file.type == "text/plain":
+                            text = str(file.read(), "utf-8")
+                            contracts.append({
+                                "contract_id": f"batch_{file.name}",
+                                "text": text
+                            })
+                        elif file.type == "application/pdf":
+                            file_bytes = file.read()
+                            file_b64 = base64.b64encode(file_bytes).decode('utf-8')
+                            contracts.append({
+                                "contract_id": f"batch_{file.name}",
+                                "file_b64": file_b64,
+                                "mime": "application/pdf"
+                            })
                     
-                    progress_bar.progress((i + 1) / len(uploaded_files))
-                    time.sleep(0.5)  # Rate limiting
+                    # Send batch request
+                    payload = {
+                        "contracts": contracts
+                    }
                     
-                except Exception as e:
-                    st.error(f"Error processing {file.name}: {str(e)}")
-            
-            # Display batch results
-            if results:
-                st.subheader("📊 Batch Analysis Results")
-                
-                batch_data = []
-                for result in results:
-                    batch_data.append({
-                        'File': result.get('filename', 'Unknown'),
-                        'Risk Score': result.get('risk_score', 0),
-                        'Confidence': result.get('confidence', 0),
-                        'Clauses': len(result.get('clauses', [])),
-                        'High Risk': len([c for c in result.get('clauses', []) if c.get('risk_level') == 'high'])
-                    })
-                
-                batch_df = pd.DataFrame(batch_data)
-                st.dataframe(batch_df, use_container_width=True)
-                
-                # Batch summary chart
-                if PLOTLY_AVAILABLE:
-                    fig = px.bar(
-                        batch_df,
-                        x='File',
-                        y='Risk Score',
-                        title="Risk Scores by File",
-                        color='Risk Score',
-                        color_continuous_scale='RdYlGn_r'
+                    headers = {"Content-Type": "application/json"}
+                    response = requests.post(
+                        f"{API_BASE_URL}/batch_analyze",
+                        json=payload,
+                        headers=headers,
+                        timeout=60
                     )
-                    st.plotly_chart(fig, use_container_width=True)
-                else:
-                    # Fallback to basic chart
-                    st.bar_chart(batch_df.set_index('File')['Risk Score'])
+                    
+                    if response.status_code == 200:
+                        batch_response = response.json()
+                        job_id = batch_response["job_id"]
+                        
+                        # Poll for results
+                        st.info(f"Batch job started: {job_id}")
+                        
+                        # Wait for completion
+                        max_attempts = 30
+                        for attempt in range(max_attempts):
+                            status_response = requests.get(
+                                f"{API_BASE_URL}/batch_analyze/{job_id}",
+                                headers=headers,
+                                timeout=10
+                            )
+                            
+                            if status_response.status_code == 200:
+                                status_data = status_response.json()
+                                
+                                if status_data["status"] == "completed":
+                                    # Display results
+                                    display_batch_results(status_data["results"])
+                                    break
+                                elif status_data["status"] == "failed":
+                                    st.error(f"Batch processing failed: {status_data.get('errors', ['Unknown error'])}")
+                                    break
+                                else:
+                                    # Still processing
+                                    progress = status_data["completed"] / status_data["total_contracts"]
+                                    st.progress(progress)
+                                    st.write(f"Processing... {status_data['completed']}/{status_data['total_contracts']} contracts")
+                                    time.sleep(2)
+                            else:
+                                st.error(f"Failed to check batch status: {status_response.status_code}")
+                                break
+                        else:
+                            st.warning("Batch processing is taking longer than expected. Please check back later.")
+                    else:
+                        st.error(f"Batch analysis failed: {response.status_code} - {response.text}")
+                        
+                except Exception as e:
+                    st.error(f"Batch processing error: {str(e)}")
+
+def display_batch_results(results):
+    """Display batch analysis results."""
+    st.subheader("📊 Batch Analysis Results")
+    
+    # Create results table
+    results_data = []
+    for result in results:
+        results_data.append({
+            "File": result["contract_id"],
+            "Risk Score": f"{result['overall_risk_score'] * 10:.1f}/10",
+            "Confidence": f"{sum(r.get('risk', 0) for r in result['results']) / len(result['results']) * 100:.1f}%" if result['results'] else "0%",
+            "Clauses": result["total_clauses"],
+            "High Risk": result["high_risk_clauses"]
+        })
+    
+    df = pd.DataFrame(results_data)
+    st.dataframe(df, use_container_width=True)
+    
+    # Summary statistics
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        avg_risk = sum(r["overall_risk_score"] for r in results) / len(results) * 10
+        st.metric("Average Risk Score", f"{avg_risk:.1f}/10")
+    
+    with col2:
+        total_clauses = sum(r["total_clauses"] for r in results)
+        st.metric("Total Clauses", total_clauses)
+    
+    with col3:
+        total_high_risk = sum(r["high_risk_clauses"] for r in results)
+        st.metric("Total High Risk", total_high_risk)
+    
+    with col4:
+        completed_contracts = len([r for r in results if r.get("status") == "completed"])
+        st.metric("Completed", f"{completed_contracts}/{len(results)}")
+    
+    # Risk distribution chart
+    if results:
+        st.subheader("📈 Risk Distribution")
+        risk_scores = [r["overall_risk_score"] * 10 for r in results]
+        
+        if PLOTLY_AVAILABLE:
+            fig = px.histogram(
+                x=risk_scores,
+                nbins=10,
+                title="Risk Score Distribution",
+                labels={"x": "Risk Score", "y": "Number of Contracts"}
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.bar_chart(pd.Series(risk_scores).value_counts().sort_index())
 
 def risk_reports_page():
     """Risk reports page."""

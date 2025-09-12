@@ -62,11 +62,21 @@ class IOUtils:
         return f"{contract_id}_clause_{clause_index:03d}"
 
     @staticmethod
-    def safe_filename(filename: str) -> str:
-        """Convert filename to a safe format."""
-        # Remove or replace unsafe characters
-        safe_name = re.sub(r'[<>:"/\\|?*]', '_', filename)
-        safe_name = re.sub(r'\s+', '_', safe_name)  # Replace spaces with underscores
-        safe_name = safe_name.strip('.')  # Remove leading/trailing dots
-
-        return safe_name[:100]  # Limit length
+    def preprocess_text(text: str) -> str:
+        """Preprocess text for model inference."""
+        if not text:
+            return ""
+        
+        # Basic text cleaning
+        text = text.strip()
+        
+        # Remove excessive whitespace
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Remove special characters but keep basic punctuation
+        text = re.sub(r'[^\w\s.,;:!?()-]', ' ', text)
+        
+        # Normalize case (keep original for now, but could lowercase)
+        # text = text.lower()
+        
+        return text.strip()
