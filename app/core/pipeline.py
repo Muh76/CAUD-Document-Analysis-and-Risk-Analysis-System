@@ -282,11 +282,11 @@ class ContractAnalyzer:
             rule_score = 0.0  # Placeholder for rule-based scoring
             risk_score = self.score_risk(rule_score, model_score)
             
-            # Confidence gating - only include results with sufficient confidence
-            min_confidence_threshold = 0.05  # 5% minimum confidence
-            if model_score < min_confidence_threshold:
-                # Skip low-confidence results
-                continue
+            # Confidence gating - temporarily disabled for debugging
+            # min_confidence_threshold = 0.05  # 5% minimum confidence
+            # if model_score < min_confidence_threshold:
+            #     # Skip low-confidence results
+            #     continue
 
             # Categorize risk
             if risk_score >= high_risk_threshold:
