@@ -966,6 +966,12 @@ def portfolio_analysis_page():
         }
         
         st.subheader("📊 Portfolio Risk Distribution")
+        
+        # Debug info
+        st.write(f"Debug: Risk distribution = {risk_distribution}")
+        st.write(f"Debug: PLOTLY_AVAILABLE = {PLOTLY_AVAILABLE}")
+        
+        # Always show chart, regardless of Plotly availability
         if PLOTLY_AVAILABLE:
             # Create a proper pie chart for portfolio risk distribution
             fig = px.pie(
@@ -983,7 +989,13 @@ def portfolio_analysis_page():
             st.plotly_chart(fig, use_container_width=True)
         else:
             # Fallback to basic chart
-            AdvancedVisualizations.display_enhanced_risk_distribution(risk_distribution)
+            st.write("Using basic chart (Plotly not available)")
+            # Create a simple bar chart using Streamlit
+            chart_data = pd.DataFrame({
+                'Risk Level': list(risk_distribution.keys()),
+                'Count': list(risk_distribution.values())
+            })
+            st.bar_chart(chart_data.set_index('Risk Level'))
         
         # Historical trend (simulated)
         st.subheader("📈 Risk Trend Analysis")
@@ -998,6 +1010,10 @@ def portfolio_analysis_page():
                 "avg_risk_score": max(0, min(1, trend_risk))
             })
         
+        # Debug info
+        st.write(f"Debug: Trend data points = {len(trend_data)}")
+        
+        # Always show chart, regardless of Plotly availability
         if PLOTLY_AVAILABLE:
             # Create a proper line chart for risk trend
             trend_df = pd.DataFrame(trend_data)
@@ -1016,7 +1032,11 @@ def portfolio_analysis_page():
             st.plotly_chart(fig, use_container_width=True)
         else:
             # Fallback to basic chart
-            AdvancedVisualizations.display_risk_trend_chart(trend_data)
+            st.write("Using basic chart (Plotly not available)")
+            # Create a simple line chart using Streamlit
+            trend_df = pd.DataFrame(trend_data)
+            trend_df['date'] = pd.to_datetime(trend_df['date'])
+            st.line_chart(trend_df.set_index('date'))
 
 def system_info_page():
     """System information page."""
