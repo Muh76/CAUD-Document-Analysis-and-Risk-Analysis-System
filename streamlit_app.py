@@ -966,7 +966,24 @@ def portfolio_analysis_page():
         }
         
         st.subheader("📊 Portfolio Risk Distribution")
-        AdvancedVisualizations.display_enhanced_risk_distribution(risk_distribution)
+        if PLOTLY_AVAILABLE:
+            # Create a proper pie chart for portfolio risk distribution
+            fig = px.pie(
+                values=list(risk_distribution.values()),
+                names=list(risk_distribution.keys()),
+                title="Portfolio Risk Distribution",
+                color_discrete_map={
+                    "High Risk": "#ff4444",
+                    "Medium Risk": "#ffaa00", 
+                    "Low Risk": "#44ff44"
+                },
+                hole=0.3  # Donut chart
+            )
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            # Fallback to basic chart
+            AdvancedVisualizations.display_enhanced_risk_distribution(risk_distribution)
         
         # Historical trend (simulated)
         st.subheader("📈 Risk Trend Analysis")
@@ -981,7 +998,25 @@ def portfolio_analysis_page():
                 "avg_risk_score": max(0, min(1, trend_risk))
             })
         
-        AdvancedVisualizations.display_risk_trend_chart(trend_data)
+        if PLOTLY_AVAILABLE:
+            # Create a proper line chart for risk trend
+            trend_df = pd.DataFrame(trend_data)
+            fig = px.line(
+                trend_df,
+                x="date",
+                y="avg_risk_score",
+                title="Portfolio Risk Trend Over Time",
+                markers=True
+            )
+            fig.update_layout(
+                yaxis_range=[0, 1],
+                xaxis_title="Date",
+                yaxis_title="Average Risk Score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            # Fallback to basic chart
+            AdvancedVisualizations.display_risk_trend_chart(trend_data)
 
 def system_info_page():
     """System information page."""
