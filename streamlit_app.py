@@ -20,6 +20,134 @@ except ImportError:
     PLOTLY_AVAILABLE = False
     st.warning("Plotly not available, using basic charts")
 
+# Advanced Visualization Components (from Phase 3)
+class AdvancedVisualizations:
+    """Advanced visualization components inspired by Phase 3."""
+    
+    @staticmethod
+    def display_portfolio_metrics(contracts_data: List[Dict[str, Any]]):
+        """Display portfolio-level metrics."""
+        if not contracts_data:
+            st.info("No contract data available for portfolio metrics")
+            return
+            
+        total_contracts = len(contracts_data)
+        total_clauses = sum(contract.get("total_clauses", 0) for contract in contracts_data)
+        avg_risk = sum(contract.get("overall_risk_score", 0) for contract in contracts_data) / total_contracts
+        
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric(
+                label="Total Contracts",
+                value=total_contracts,
+                delta=None
+            )
+        
+        with col2:
+            st.metric(
+                label="Total Clauses", 
+                value=total_clauses,
+                delta=f"{total_clauses/total_contracts:.1f} avg/contract"
+            )
+        
+        with col3:
+            st.metric(
+                label="Average Risk",
+                value=f"{avg_risk:.3f}",
+                delta="Portfolio Risk"
+            )
+            
+        with col4:
+            high_risk_contracts = len([c for c in contracts_data if c.get("overall_risk_score", 0) > 0.3])
+            st.metric(
+                label="High Risk Contracts",
+                value=high_risk_contracts,
+                delta=f"{high_risk_contracts/total_contracts*100:.1f}%"
+            )
+    
+    @staticmethod
+    def display_portfolio_scatter(contracts_data: List[Dict[str, Any]]):
+        """Display portfolio risk scatter plot."""
+        if not contracts_data:
+            return
+            
+        portfolio_df = pd.DataFrame([
+            {
+                "Contract": contract.get("contract_id", f"Contract {i}"),
+                "Risk Score": contract.get("overall_risk_score", 0),
+                "Clauses": contract.get("total_clauses", 0),
+                "High Risk": contract.get("high_risk_clauses", 0)
+            }
+            for i, contract in enumerate(contracts_data)
+        ])
+        
+        if PLOTLY_AVAILABLE:
+            fig = px.scatter(
+                portfolio_df,
+                x="Clauses",
+                y="Risk Score",
+                size="High Risk",
+                hover_name="Contract",
+                title="Portfolio Risk Analysis: Risk Score vs Clauses",
+                labels={
+                    "Risk Score": "Overall Risk Score",
+                    "Clauses": "Number of Clauses",
+                    "High Risk": "High Risk Clauses"
+                },
+                color="Risk Score",
+                color_continuous_scale="RdYlGn_r"  # Red to Green (high risk = red)
+            )
+            fig.update_layout(
+                xaxis_title="Number of Clauses",
+                yaxis_title="Risk Score (0-1)",
+                showlegend=True
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.scatter_chart(portfolio_df[["Clauses", "Risk Score"]])
+    
+    @staticmethod
+    def display_risk_trend_chart(historical_data: List[Dict[str, Any]]):
+        """Display risk trend over time."""
+        if not historical_data:
+            return
+            
+        if PLOTLY_AVAILABLE:
+            fig = px.line(
+                historical_data,
+                x="date",
+                y="avg_risk_score",
+                title="Portfolio Risk Trend Over Time",
+                labels={"date": "Date", "avg_risk_score": "Average Risk Score"},
+                markers=True
+            )
+            fig.update_layout(
+                yaxis_range=[0, 1],
+                xaxis_title="Date",
+                yaxis_title="Average Risk Score"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+    
+    @staticmethod
+    def display_enhanced_risk_distribution(risk_data: Dict[str, int]):
+        """Display enhanced risk distribution with Phase 3 styling."""
+        if PLOTLY_AVAILABLE:
+            fig = px.bar(
+                x=list(risk_data.keys()),
+                y=list(risk_data.values()),
+                color=list(risk_data.keys()),
+                color_discrete_map={
+                    "High Risk": "#ff4444",
+                    "Medium Risk": "#ffaa00", 
+                    "Low Risk": "#44ff44"
+                },
+                title="Contract Risk Distribution",
+                labels={'x': 'Risk Level', 'y': 'Number of Contracts'}
+            )
+            fig.update_layout(showlegend=False)
+            st.plotly_chart(fig, use_container_width=True)
+
 # Page configuration
 st.set_page_config(
     page_title="Contract Review & Risk Analysis",
@@ -29,7 +157,7 @@ st.set_page_config(
 )
 
 # API Configuration
-API_BASE_URL = "https://contract-analysis-api-5wwrqt3oua-uc.a.run.app"
+API_BASE_URL = "https://contract-analysis-api-77455288936.us-central1.run.app"
 
 def get_api_health():
     """Check API health status."""
@@ -110,7 +238,7 @@ def main():
         st.header("📋 Navigation")
         page = st.selectbox(
             "Choose a page:",
-            ["Contract Analysis", "Batch Analysis", "Risk Reports", "System Info"]
+            ["Contract Analysis", "Batch Analysis", "Portfolio Analysis", "Risk Reports", "System Info"]
         )
     
     # Main content based on selected page
@@ -118,6 +246,8 @@ def main():
         contract_analysis_page()
     elif page == "Batch Analysis":
         batch_analysis_page()
+    elif page == "Portfolio Analysis":
+        portfolio_analysis_page()
     elif page == "Risk Reports":
         risk_reports_page()
     elif page == "System Info":
@@ -285,23 +415,47 @@ def display_analysis_results(result: Dict[str, Any]):
         df = pd.DataFrame(clauses_data)
         st.dataframe(df, use_container_width=True)
         
-        # Risk distribution chart
+        # Enhanced Risk distribution chart with Phase 3 styling
         if len(clauses_data) > 0:
             st.subheader("📊 Risk Distribution")
             risk_counts = df['Risk Level'].value_counts()
             
             if PLOTLY_AVAILABLE:
+                # Enhanced pie chart with better styling
                 fig = px.pie(
                     values=risk_counts.values,
                     names=risk_counts.index,
                     title=f"Risk Level Distribution (N={len(clauses_data)} clauses)",
                     color_discrete_map={
-                        'low': '#28a745',
-                        'medium': '#ffc107', 
-                        'high': '#dc3545'
-                    }
+                        'low': '#44ff44',
+                        'medium': '#ffaa00', 
+                        'high': '#ff4444'
+                    },
+                    hole=0.3  # Donut chart for modern look
+                )
+                fig.update_traces(textposition='inside', textinfo='percent+label')
+                fig.update_layout(
+                    font=dict(size=12),
+                    showlegend=True,
+                    legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.01)
                 )
                 st.plotly_chart(fig, use_container_width=True)
+                
+                # Add bar chart for better comparison
+                fig_bar = px.bar(
+                    x=risk_counts.index,
+                    y=risk_counts.values,
+                    color=risk_counts.index,
+                    color_discrete_map={
+                        'low': '#44ff44',
+                        'medium': '#ffaa00', 
+                        'high': '#ff4444'
+                    },
+                    title="Risk Level Count Comparison",
+                    labels={'x': 'Risk Level', 'y': 'Number of Clauses'}
+                )
+                fig_bar.update_layout(showlegend=False)
+                st.plotly_chart(fig_bar, use_container_width=True)
             else:
                 # Fallback to basic chart
                 st.bar_chart(risk_counts)
@@ -498,7 +652,7 @@ def display_risk_report(report_data):
     with col4:
         st.metric("Low Risk", report_data['low_risk_count'], delta=None)
     
-    # Risk distribution pie chart
+    # Enhanced Risk distribution with Phase 3 styling
     st.subheader("📊 Risk Distribution")
     
     risk_data = {
@@ -508,12 +662,41 @@ def display_risk_report(report_data):
     }
     
     if PLOTLY_AVAILABLE:
+        # Enhanced pie chart with donut style
         fig = px.pie(
             values=list(risk_data.values()),
             names=list(risk_data.keys()),
-            title="Contract Risk Distribution"
+            title="Contract Risk Distribution",
+            color_discrete_map={
+                "High Risk": "#ff4444",
+                "Medium Risk": "#ffaa00", 
+                "Low Risk": "#44ff44"
+            },
+            hole=0.3  # Donut chart
+        )
+        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_layout(
+            font=dict(size=12),
+            showlegend=True,
+            legend=dict(orientation="v", yanchor="middle", y=0.5, xanchor="left", x=1.01)
         )
         st.plotly_chart(fig, use_container_width=True)
+        
+        # Add bar chart for comparison
+        fig_bar = px.bar(
+            x=list(risk_data.keys()),
+            y=list(risk_data.values()),
+            color=list(risk_data.keys()),
+            color_discrete_map={
+                "High Risk": "#ff4444",
+                "Medium Risk": "#ffaa00", 
+                "Low Risk": "#44ff44"
+            },
+            title="Risk Level Count Comparison",
+            labels={'x': 'Risk Level', 'y': 'Number of Contracts'}
+        )
+        fig_bar.update_layout(showlegend=False)
+        st.plotly_chart(fig_bar, use_container_width=True)
     else:
         # Fallback to basic chart
         st.bar_chart(pd.Series(risk_data))
@@ -649,6 +832,140 @@ def risk_reports_page():
         # Fallback to basic chart
         category_df = pd.DataFrame({'Category': categories, 'Count': counts})
         st.bar_chart(category_df.set_index('Category')['Count'])
+
+def portfolio_analysis_page():
+    """Portfolio analysis page with advanced visualizations."""
+    st.header("📊 Portfolio Analysis")
+    st.markdown("Advanced portfolio-level contract analysis and visualization")
+    
+    # Portfolio data input section
+    st.subheader("📋 Portfolio Data Input")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        # Option to analyze multiple contracts
+        st.write("**Option 1: Analyze Multiple Contracts**")
+        contract_texts = st.text_area(
+            "Enter contract texts (one per line, separate with '---'):",
+            value="TERMINATION: Either party may terminate this agreement with 30 days notice.\n\n---\n\nLIABILITY: Each party's liability shall be limited to the contract amount.\n\n---\n\nGOVERNING LAW: This agreement shall be governed by California law.",
+            height=200
+        )
+    
+    with col2:
+        st.write("**Option 2: Use Sample Portfolio**")
+        if st.button("Load Sample Portfolio", type="secondary"):
+            # Generate sample portfolio data
+            sample_contracts = [
+                {
+                    "contract_id": "contract_001",
+                    "text": "TERMINATION: Either party may terminate this agreement with 30 days notice. GOVERNING LAW: This agreement shall be governed by California law.",
+                    "overall_risk_score": 0.296,
+                    "total_clauses": 2,
+                    "high_risk_clauses": 1,
+                    "medium_risk_clauses": 1,
+                    "low_risk_clauses": 0
+                },
+                {
+                    "contract_id": "contract_002", 
+                    "text": "LIABILITY: Each party's liability shall be limited to the contract amount. CONFIDENTIALITY: Both parties agree to maintain confidentiality.",
+                    "overall_risk_score": 0.156,
+                    "total_clauses": 2,
+                    "high_risk_clauses": 0,
+                    "medium_risk_clauses": 1,
+                    "low_risk_clauses": 1
+                },
+                {
+                    "contract_id": "contract_003",
+                    "text": "INDEMNITY: Each party shall indemnify the other. ASSIGNMENT: This agreement may not be assigned without consent.",
+                    "overall_risk_score": 0.445,
+                    "total_clauses": 2,
+                    "high_risk_clauses": 2,
+                    "medium_risk_clauses": 0,
+                    "low_risk_clauses": 0
+                }
+            ]
+            st.session_state.portfolio_data = sample_contracts
+            st.success("Sample portfolio loaded!")
+    
+    # Analyze portfolio
+    if st.button("Analyze Portfolio", type="primary"):
+        if contract_texts:
+            # Parse multiple contracts
+            contracts = contract_texts.split("---")
+            portfolio_data = []
+            
+            for i, contract_text in enumerate(contracts):
+                if contract_text.strip():
+                    # Analyze each contract
+                    result = analyze_contract(contract_text.strip())
+                    if result:
+                        portfolio_data.append({
+                            "contract_id": f"contract_{i+1:03d}",
+                            "text": contract_text.strip(),
+                            "overall_risk_score": result.get("overall_risk_score", 0),
+                            "total_clauses": result.get("total_clauses", 0),
+                            "high_risk_clauses": result.get("high_risk_clauses", 0),
+                            "medium_risk_clauses": result.get("medium_risk_clauses", 0),
+                            "low_risk_clauses": result.get("low_risk_clauses", 0)
+                        })
+            
+            if portfolio_data:
+                st.session_state.portfolio_data = portfolio_data
+                st.success(f"Portfolio analyzed: {len(portfolio_data)} contracts")
+            else:
+                st.error("Failed to analyze portfolio contracts")
+    
+    # Display portfolio analysis
+    if hasattr(st.session_state, 'portfolio_data') and st.session_state.portfolio_data:
+        portfolio_data = st.session_state.portfolio_data
+        
+        st.subheader("📈 Portfolio Metrics")
+        AdvancedVisualizations.display_portfolio_metrics(portfolio_data)
+        
+        st.subheader("📊 Portfolio Risk Analysis")
+        AdvancedVisualizations.display_portfolio_scatter(portfolio_data)
+        
+        # Individual contract details
+        st.subheader("📋 Individual Contract Details")
+        contract_details = []
+        for contract in portfolio_data:
+            contract_details.append({
+                "Contract ID": contract["contract_id"],
+                "Risk Score": f"{contract['overall_risk_score']:.3f}",
+                "Total Clauses": contract["total_clauses"],
+                "High Risk": contract["high_risk_clauses"],
+                "Medium Risk": contract["medium_risk_clauses"],
+                "Low Risk": contract["low_risk_clauses"]
+            })
+        
+        df_details = pd.DataFrame(contract_details)
+        st.dataframe(df_details, use_container_width=True)
+        
+        # Risk distribution
+        risk_distribution = {
+            "High Risk": len([c for c in portfolio_data if c["overall_risk_score"] > 0.3]),
+            "Medium Risk": len([c for c in portfolio_data if 0.1 < c["overall_risk_score"] <= 0.3]),
+            "Low Risk": len([c for c in portfolio_data if c["overall_risk_score"] <= 0.1])
+        }
+        
+        st.subheader("📊 Portfolio Risk Distribution")
+        AdvancedVisualizations.display_enhanced_risk_distribution(risk_distribution)
+        
+        # Historical trend (simulated)
+        st.subheader("📈 Risk Trend Analysis")
+        dates = pd.date_range(start='2024-01-01', periods=12, freq='M')
+        trend_data = []
+        for i, date in enumerate(dates):
+            # Simulate risk trend
+            base_risk = sum(c["overall_risk_score"] for c in portfolio_data) / len(portfolio_data)
+            trend_risk = base_risk + (i * 0.01) + (0.05 if i % 3 == 0 else -0.02)
+            trend_data.append({
+                "date": date.strftime("%Y-%m"),
+                "avg_risk_score": max(0, min(1, trend_risk))
+            })
+        
+        AdvancedVisualizations.display_risk_trend_chart(trend_data)
 
 def system_info_page():
     """System information page."""
