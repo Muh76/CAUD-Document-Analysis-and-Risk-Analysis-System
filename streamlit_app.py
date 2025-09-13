@@ -276,7 +276,7 @@ def contract_analysis_page():
         uploaded_file = st.file_uploader(
             "Upload contract file",
             type=['txt', 'pdf'],
-            help="Upload a text or PDF file containing the contract"
+            help="Upload a text or PDF file containing the contract. PDF processing may take longer for large files."
         )
         
         if uploaded_file:
@@ -284,6 +284,9 @@ def contract_analysis_page():
                 contract_text = str(uploaded_file.read(), "utf-8")
             elif uploaded_file.type == "application/pdf":
                 # Handle PDF files
+                st.info(f"📄 PDF file uploaded: {uploaded_file.name} ({uploaded_file.size} bytes)")
+                st.info("🔄 PDF processing may take a moment...")
+                
                 file_bytes = uploaded_file.read()
                 file_b64 = base64.b64encode(file_bytes).decode('utf-8')
                 
@@ -755,11 +758,23 @@ def risk_reports_page():
     # Input section for contract IDs
     st.subheader("📋 Generate Risk Report")
     
+    # Explanation of Contract IDs
+    st.info("""
+    **What are Contract IDs?**
+    
+    Contract IDs are identifiers for contracts you've already analyzed. You can find them in:
+    - **Single Contract Analysis**: Look at the contract ID in the results
+    - **Batch Analysis**: Check the "File" column in the results table
+    - **Portfolio Analysis**: Check the "Contract ID" column
+    
+    **Examples**: `contract_001`, `batch_2ThemartComInc_19990826_10-12G...`, etc.
+    """)
+
     # Contract IDs input
     contract_ids_input = st.text_area(
         "Enter Contract IDs (one per line):",
         value="contract_001\ncontract_002\ncontract_003",
-        help="Enter contract IDs to analyze for risk reporting"
+        help="Enter contract IDs from previous analyses to generate a risk report"
     )
     
     include_suggestions = st.checkbox("Include Recommendations", value=True)
@@ -847,9 +862,10 @@ def portfolio_analysis_page():
         # Option to analyze multiple contracts
         st.write("**Option 1: Analyze Multiple Contracts**")
         contract_texts = st.text_area(
-            "Enter contract texts (one per line, separate with '---'):",
-            value="TERMINATION: Either party may terminate this agreement with 30 days notice.\n\n---\n\nLIABILITY: Each party's liability shall be limited to the contract amount.\n\n---\n\nGOVERNING LAW: This agreement shall be governed by California law.",
-            height=200
+            "Enter contract texts (separate each contract with '---' on its own line):",
+            value="TERMINATION: Either party may terminate this agreement with 30 days notice.\nGOVERNING LAW: This agreement shall be governed by California law.\n\n---\n\nLIABILITY: Each party's liability shall be limited to the contract amount.\nCONFIDENTIALITY: Both parties agree to maintain confidentiality.\n\n---\n\nINDEMNITY: Each party shall indemnify the other against third-party claims.\nASSIGNMENT: This agreement may not be assigned without written consent.",
+            height=200,
+            help="Enter contract text for each contract, separated by '---' on its own line"
         )
     
     with col2:
