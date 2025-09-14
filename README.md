@@ -10,7 +10,7 @@
 
 ## 🚀 Live Demo
 
-- **📊 Interactive Dashboard**: [Streamlit App](https://diabetes-readmission-prediction-kqd6mc85jfzs4zxa7tcyvk.streamlit.app/)
+- **📊 Interactive Dashboard**: [Streamlit App](https://caud-document-analysis-and-risk-analysis-system-ewtqqoht5ys9ta.streamlit.app/)
 - **🔌 API Endpoint**: [Google Cloud Run API](https://contract-analysis-api-77455288936.us-central1.run.app)
 - **📖 API Documentation**: [Interactive Docs](https://contract-analysis-api-77455288936.us-central1.run.app/docs)
 
@@ -203,8 +203,8 @@ Our Phase 2 modeling process generated comprehensive performance analysis with t
 #### **1. Top Clause Performance (Precision-Recall Curves)**
 Our trained `distilroberta-base` model demonstrates excellent performance across different contract clause types:
 
-![Top Clause Performance](./docs/images/clause_performance.png)
-*Precision-Recall curves showing model performance across 10 key contract clauses*
+![Top Clause Performance](./docs/images/ModelTopClasuePerformance.png)
+*Precision-Recall curves showing model performance across 10 key contract clauses with Average Precision (AP) scores*
 
 **Key Results:**
 - **Parties & Document Name**: Near-perfect performance (AP = 1.000)
@@ -215,8 +215,8 @@ Our trained `distilroberta-base` model demonstrates excellent performance across
 #### **2. Model Calibration Quality**
 Our model shows well-calibrated probability estimates with proper confidence scoring:
 
-![Calibration Quality](./docs/images/calibration_quality.png)
-*Calibration analysis showing reliability diagrams and ECE metrics across clause types*
+![Calibration Quality](./docs/images/CalibrationQuality_BeforeAfter.png)
+*Calibration analysis showing reliability diagrams, ECE metrics, and probability distribution across clause types*
 
 **Calibration Metrics:**
 - **Overall ECE**: 0.260 (Expected Calibration Error)
@@ -227,8 +227,8 @@ Our model shows well-calibrated probability estimates with proper confidence sco
 #### **3. ROI & Cost-Benefit Analysis**
 Financial analysis showing positive ROI for contract review automation:
 
-![ROI Analysis](./docs/images/roi_analysis.png)
-*ROI waterfall chart, sensitivity analysis, and break-even calculations*
+![ROI Analysis](./docs/images/ROI-CostBenefit.png)
+*ROI waterfall chart, sensitivity analysis, and break-even calculations showing financial benefits of automation*
 
 **Financial Benefits:**
 - **Break-even Point**: ≥14 contracts/month
@@ -239,13 +239,25 @@ Financial analysis showing positive ROI for contract review automation:
 #### **4. Portfolio Risk Analysis**
 Advanced portfolio-level risk assessment and trend analysis:
 
-![Portfolio Risk](./docs/images/portfolio_risk.png)
-*Portfolio risk heatmap and trend analysis over time*
+![Portfolio Risk](./docs/images/PortfolioRiskAnalysis.png)
+*Portfolio risk heatmap and trend analysis showing risk distribution patterns over time*
 
 **Portfolio Insights:**
 - **Risk Distribution**: Comprehensive risk categorization across contract portfolios
 - **Trend Analysis**: Historical risk pattern identification
 - **Correlation Analysis**: Risk factor relationships and dependencies
+
+#### **5. Red Flag Drivers & Triage Analysis**
+Advanced risk triage system for prioritizing contract review efforts:
+
+![Red Flag Drivers](./docs/images/RedFlagDrivers_Triages.png)
+*Red flag drivers analysis showing risk triage categories and priority scoring for contract review*
+
+**Triage Insights:**
+- **High Priority**: Critical clauses requiring immediate attention
+- **Medium Priority**: Important clauses for secondary review
+- **Low Priority**: Standard clauses with minimal risk
+- **Automated Triage**: AI-powered risk prioritization system
 
 ## 🌐 API Documentation
 
