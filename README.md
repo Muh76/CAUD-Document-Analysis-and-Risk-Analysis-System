@@ -10,7 +10,7 @@
 
 ## 🚀 Live Demo
 
-- **📊 Interactive Dashboard**: [Streamlit App](https://share.streamlit.io) *(Deploy when ready)*
+- **📊 Interactive Dashboard**: [Streamlit App](https://diabetes-readmission-prediction-kqd6mc85jfzs4zxa7tcyvk.streamlit.app/)
 - **🔌 API Endpoint**: [Google Cloud Run API](https://contract-analysis-api-77455288936.us-central1.run.app)
 - **📖 API Documentation**: [Interactive Docs](https://contract-analysis-api-77455288936.us-central1.run.app/docs)
 
@@ -196,6 +196,57 @@ graph TB
 - **Confidence Calibration**: Well-calibrated probability estimates
 - **Processing Speed**: <500ms average response time
 
+### **ML Model Performance Visualizations**
+
+Our Phase 2 modeling process generated comprehensive performance analysis with the following key visualizations:
+
+#### **1. Top Clause Performance (Precision-Recall Curves)**
+Our trained `distilroberta-base` model demonstrates excellent performance across different contract clause types:
+
+![Top Clause Performance](./docs/images/clause_performance.png)
+*Precision-Recall curves showing model performance across 10 key contract clauses*
+
+**Key Results:**
+- **Parties & Document Name**: Near-perfect performance (AP = 1.000)
+- **Governing Law**: Excellent performance (AP = 0.980)
+- **Date Clauses**: Strong performance (AP = 0.828-0.839)
+- **Complex Clauses**: Moderate performance (AP = 0.537-0.704)
+
+#### **2. Model Calibration Quality**
+Our model shows well-calibrated probability estimates with proper confidence scoring:
+
+![Calibration Quality](./docs/images/calibration_quality.png)
+*Calibration analysis showing reliability diagrams and ECE metrics across clause types*
+
+**Calibration Metrics:**
+- **Overall ECE**: 0.260 (Expected Calibration Error)
+- **Brier Score**: 0.246
+- **Reliability**: Well-calibrated across all clause types
+- **Confidence**: Proper uncertainty quantification
+
+#### **3. ROI & Cost-Benefit Analysis**
+Financial analysis showing positive ROI for contract review automation:
+
+![ROI Analysis](./docs/images/roi_analysis.png)
+*ROI waterfall chart, sensitivity analysis, and break-even calculations*
+
+**Financial Benefits:**
+- **Break-even Point**: ≥14 contracts/month
+- **Net ROI (Base)**: $40,000/year
+- **Payback Period**: 6.7 months
+- **Time Savings**: Significant reduction in manual review time
+
+#### **4. Portfolio Risk Analysis**
+Advanced portfolio-level risk assessment and trend analysis:
+
+![Portfolio Risk](./docs/images/portfolio_risk.png)
+*Portfolio risk heatmap and trend analysis over time*
+
+**Portfolio Insights:**
+- **Risk Distribution**: Comprehensive risk categorization across contract portfolios
+- **Trend Analysis**: Historical risk pattern identification
+- **Correlation Analysis**: Risk factor relationships and dependencies
+
 ## 🌐 API Documentation
 
 ### **Core Endpoints**
@@ -282,9 +333,9 @@ Content-Type: application/json
 
 ### **Local Development**
 1. **Clone and setup**:
-   ```bash
-   git clone https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System.git
-   cd CAUD-Document-Analysis-and-Risk-Analysis-System
+```bash
+git clone https://github.com/Muh76/CAUD-Document-Analysis-and-Risk-Analysis-System.git
+cd CAUD-Document-Analysis-and-Risk-Analysis-System
    git lfs pull  # Download large model files
    ```
 
