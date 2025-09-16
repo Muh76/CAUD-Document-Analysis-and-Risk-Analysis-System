@@ -162,7 +162,7 @@ API_BASE_URL = "https://contract-analysis-api-77455288936.us-central1.run.app"
 def get_api_health():
     """Check API health status."""
     try:
-        response = requests.get(f"{API_BASE_URL}/health", timeout=10)
+        response = requests.get(f"{API_BASE_URL}/health", timeout=30)
         if response.status_code == 200:
             return response.json()
         return None
@@ -531,7 +531,7 @@ def batch_analysis_page():
                             status_response = requests.get(
                                 f"{API_BASE_URL}/batch_analyze/{job_id}",
                                 headers=headers,
-                                timeout=10
+                                timeout=30
                             )
                             
                             if status_response.status_code == 200:
@@ -561,6 +561,22 @@ def batch_analysis_page():
                 except Exception as e:
                     st.error(f"Batch processing error: {str(e)}")
 
+def extract_confidence_from_rationale(rationale_list):
+    """Extract average confidence from rationale list."""
+    if not rationale_list:
+        return 0.0
+    
+    confidences = []
+    for rationale in rationale_list:
+        if "confidence" in rationale.lower():
+            # Extract confidence value from "High confidence (0.99)" format
+            import re
+            match = re.search(r'\(([0-9.]+)\)', rationale)
+            if match:
+                confidences.append(float(match.group(1)))
+    
+    return sum(confidences) / len(confidences) if confidences else 0.0
+
 def display_batch_results(results):
     """Display batch analysis results."""
     st.subheader("📊 Batch Analysis Results")
@@ -568,10 +584,18 @@ def display_batch_results(results):
     # Create results table
     results_data = []
     for result in results:
+        # Extract confidence from rationale
+        confidence = 0.0
+        if result.get('results'):
+            all_rationale = []
+            for r in result['results']:
+                all_rationale.extend(r.get('rationale', []))
+            confidence = extract_confidence_from_rationale(all_rationale)
+        
         results_data.append({
             "File": result["contract_id"],
             "Risk Score": f"{result['overall_risk_score'] * 10:.1f}/10",
-            "Confidence": f"{sum(r.get('risk', 0) for r in result['results']) / len(result['results']) * 100:.1f}%" if result['results'] else "0%",
+            "Confidence": f"{confidence * 100:.1f}%",
             "Clauses": result["total_clauses"],
             "High Risk": result["high_risk_clauses"]
         })
